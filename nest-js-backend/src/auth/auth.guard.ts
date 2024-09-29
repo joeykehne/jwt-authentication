@@ -1,7 +1,6 @@
 import {
   CanActivate,
   ExecutionContext,
-  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -19,31 +18,22 @@ export class AuthGuard implements CanActivate {
    * @throws ForbiddenException if the token is invalid or an error occurs during validation.
    */
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    try {
-      const request = context.switchToHttp().getRequest();
-      const { authorization }: any = request.headers;
+    // Get the request object
+    const request = context.switchToHttp().getRequest();
 
-      // Check if the authorization header is present and not empty
-      if (!authorization || authorization.trim() === '') {
-        throw new UnauthorizedException('Please provide token');
-      }
+    // get token from headers
+    const token = request.headers['authorization'];
 
-      // Extract the token from the authorization header
-      const authToken = authorization.replace(/bearer/gim, '').trim();
+    // split token
+    const [_, tokenValue] = token.split(' ');
 
-      // Validate the token using AuthService
-      const resp = await this.authService.validateToken(authToken);
+    // Check if token is provided
+    if (!tokenValue) throw new UnauthorizedException('No token provided');
 
-      // Attach the decoded data to the request object
-      request.decodedData = resp;
+    // Check if token is valid
+    const tokenValid = this.authService.validateToken(tokenValue);
 
-      // Allow the request to proceed
-      return true;
-    } catch (error) {
-      // Throw a forbidden exception if token validation fails or another error occurs
-      throw new ForbiddenException(
-        error.message || 'Session expired! Please sign in',
-      );
-    }
+    // Return true if token is valid
+    return tokenValid;
   }
 }

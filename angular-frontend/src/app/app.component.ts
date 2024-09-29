@@ -14,16 +14,6 @@ export class AppComponent {
 		console.log(this.http.accessToken);
 	}
 
-	// Fetches and logs the currently authenticated user's information
-	async whoAmI() {
-		try {
-			const userInfo = await this.http.get('auth/whoami');
-			console.log(userInfo);
-		} catch (error) {
-			console.error('Error fetching user info:', error);
-		}
-	}
-
 	// Fetches and logs data from a protected endpoint
 	async getProtected() {
 		try {
@@ -47,7 +37,7 @@ export class AppComponent {
 	// Registers a new user and logs the user and access token
 	async register() {
 		try {
-			const { user, accessToken } = await this.http.post<{
+			const { accessToken } = await this.http.post<{
 				user: any;
 				accessToken: string;
 			}>('auth/register', {
@@ -56,7 +46,7 @@ export class AppComponent {
 				name: 'User',
 			});
 			this.http.accessToken = accessToken;
-			console.log(user, accessToken);
+			console.log(accessToken);
 		} catch (error) {
 			console.error('Error registering user:', error);
 		}
@@ -65,7 +55,7 @@ export class AppComponent {
 	// Logs in an existing user and logs the user and access token
 	async login() {
 		try {
-			const { user, accessToken } = await this.http.post<{
+			const { accessToken } = await this.http.post<{
 				user: any;
 				accessToken: string;
 			}>('auth/login', {
@@ -73,7 +63,7 @@ export class AppComponent {
 				password: 'changeme',
 			});
 			this.http.accessToken = accessToken;
-			console.log(user, accessToken);
+			console.log(accessToken);
 		} catch (error) {
 			console.error('Error logging in:', error);
 		}
@@ -84,6 +74,7 @@ export class AppComponent {
 		try {
 			await this.http.get('auth/logout');
 			this.http.accessToken = '';
+			console.log('Logged out');
 		} catch (error) {
 			console.error('Error logging out:', error);
 		}

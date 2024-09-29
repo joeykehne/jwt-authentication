@@ -24,7 +24,7 @@ This project demonstrates a full-stack application with authentication using Nes
 
 2.  Install Dependencies: ` npm install `
 
-3.  Environment Variables: Create a `.env` file in the root directory and add your configuration variables: 
+3.  Environment Variables: Create a `.env` file in the root directory and add your configuration variables (an example with dummy values is already given): 
 ```ts
 JWT_SECRET=your-jwt-secret-key
 MONGODB_URI=your-mongodb-uri
@@ -33,7 +33,7 @@ MONGODB_URI=your-mongodb-uri
 
 ### Project Structure
 
--   `src/auth/auth.controller.ts`: Handles authentication routes (login, register, whoami, logout, refresh token).
+-   `src/auth/auth.controller.ts`: Handles authentication routes (login, register, logout, refresh token).
 
 -   `src/auth/auth.service.ts`: Contains the logic for user authentication, registration, and token management.
 
@@ -57,61 +57,13 @@ MONGODB_URI=your-mongodb-uri
 
 -   `src/app/services/http.service.ts`: HTTP service to handle API calls and token management.
 
--   `src/app/app.component.ts`: Main component with methods for user actions (login, register, logout, whoami, etc.).
+-   `src/app/app.component.ts`: Main component with methods for user actions (login, register, logout, etc.).
 
 -   `src/environments/environment.ts`: Configuration for API URL.
 
 ## Usage
+In the angular-frontend folder are a few examples on how the system operates. Just open the browser console and click the according buttons.
 
-### Register a New User
-```ts
-async register() {
-  const { user, accessToken } = await this.http.post<{
-    user: any;
-    accessToken: string;
-  }>('auth/register', {
-    email: 'example@example.com',
-    password: 'password',
-    name: 'Example User',
-  });
-  this.http.accessToken = accessToken;
-  console.log(user, accessToken);
-}
-```
-### Login an Existing User
-```ts
-async login() {
-  const { user, accessToken } = await this.http.post<{
-    user: any;
-    accessToken: string;
-  }>('auth/login', {
-    email: 'example@example.com',
-    password: 'password',
-  });
-  this.http.accessToken = accessToken;
-  console.log(user, accessToken);
-}
-```
-### Access Protected Routes
-```ts
-async getProtected() {
-  console.log(await this.http.get('protected'));
-}
-```
-### Refresh Access Token
-```ts
-async requestNewAccessToken() {
-  await this.http.requestNewAccessToken();
-  console.log(this.http.accessToken);
-}
-```
-### Logout
-```ts
-async logout() {
-  await this.http.get('auth/logout');
-  this.http.accessToken = '';
-}
-```
 ## Contributing
 
 1.  Fork the repository.

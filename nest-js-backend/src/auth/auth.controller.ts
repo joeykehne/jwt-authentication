@@ -11,9 +11,8 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
-import { accessTokenExpiresIn } from 'src/constants';
+import { accessTokenExpiresIn, refreshTokenExpiresIn } from 'src/constants';
 import { DUser } from 'src/schemas/user.schema';
-import { UserService } from 'src/user/user.service';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
@@ -22,29 +21,7 @@ export class AuthController {
     private auth: AuthService,
     private jwtService: JwtService,
     private configService: ConfigService,
-    private user: UserService,
   ) {}
-
-  /**
-   * Endpoint to get information about the currently authenticated user.
-   * @param req The request object containing the authorization header.
-   * @param res The response object to send the user data.
-   */
-  @Get('whoami')
-  async whoAmI(@Req() req: Request, @Res() res: Response) {
-    const accessToken = req.headers.authorization.split(' ')[1];
-
-    if (!accessToken) throw new ForbiddenException('No token provided');
-    try {
-      const { _id } = this.jwtService.decode(accessToken);
-      this.user.currentUser._id = _id;
-
-      await this.user.refreshCurrentUser();
-      res.send(this.user.currentUser);
-    } catch (error) {
-      throw new NotFoundException('Deprecated token', error);
-    }
-  }
 
   /**
    * Endpoint to login a user with email and password, returns access and refresh tokens.
@@ -56,6 +33,10 @@ export class AuthController {
     @Body() body: { email: string; password: string },
     @Res() res: Response,
   ) {
+    if (!body.email || !body.password) {
+      throw new ForbiddenException('Email and password are required');
+    }
+
     const { user, accessToken, refreshToken } = await this.auth.login(
       body.email,
       body.password,
@@ -65,12 +46,11 @@ export class AuthController {
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 1000 * 60 * 60 * 24 * 30,
+      maxAge: refreshTokenExpiresIn * 1000, // Convert to milliseconds
     });
 
     // Send user data and access token
     res.send({
-      user,
       accessToken,
     });
   }
@@ -82,29 +62,43 @@ export class AuthController {
    */
   @Post('register')
   async register(@Body() body: DUser, @Res() res: Response) {
+    if (!body.email || !body.password) {
+      throw new ForbiddenException('Email and password are required');
+    }
+
     const { user, accessToken, refreshToken } = await this.auth.register(body);
 
     // Set refresh token as a cookie
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
-      maxAge: 1000 * 60 * 60 * 24 * 30,
+      maxAge: refreshTokenExpiresIn * 1000, // Convert to milliseconds
     });
 
     // Send user data and access token
     res.send({
-      user,
       accessToken,
     });
   }
 
   /**
    * Endpoint to logout the currently authenticated user.
+   * @param req The request object containing the authorization token.
    * @param res The response object to send an empty response.
    */
   @Get('logout')
-  async logout(@Res() res: Response) {
-    this.user.currentUser = {} as DUser;
+  async logout(@Req() req: Request, @Res() res: Response) {
+    // get user id from token in cookie
+    const refreshToken = req.cookies?.['refreshToken'];
+
+    // Delete the refresh token from the database
+    let payload;
+    try {
+      payload = this.jwtService.verify(refreshToken, {
+        secret: this.configService.get<string>('JWT_SECRET'),
+      });
+      this.auth.logout(payload._id);
+    } catch (e) {}
 
     // Clear the refresh token cookie
     res.cookie('refreshToken', '', {
@@ -113,7 +107,9 @@ export class AuthController {
       maxAge: 0,
     });
 
-    res.send();
+    res.send({
+      message: 'Logged out successfully',
+    });
   }
 
   /**
@@ -132,7 +128,7 @@ export class AuthController {
     let payload;
     try {
       payload = this.jwtService.verify(refreshToken, {
-        secret: this.configService.get<string>('JWT_REFRESH_SECRET'), // Secret for refresh token
+        secret: this.configService.get<string>('JWT_SECRET'),
       });
     } catch (e) {
       throw new ForbiddenException('Invalid refresh token');
@@ -150,8 +146,6 @@ export class AuthController {
     if (!isEqualToSavedToken)
       throw new ForbiddenException('Outdated refresh token');
 
-    this.user.currentUser = user;
-
     // Generate a new access token
     const accessToken = this.jwtService.sign(
       { _id: user._id },
@@ -162,6 +156,6 @@ export class AuthController {
     );
 
     // Send the new access token
-    res.send({ accessToken: accessToken });
+    res.send({ accessToken });
   }
 }

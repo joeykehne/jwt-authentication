@@ -11,7 +11,6 @@ import * as bcrypt from 'bcrypt';
 import { Model } from 'mongoose';
 import { accessTokenExpiresIn, refreshTokenExpiresIn } from 'src/constants';
 import { DUser } from 'src/schemas/user.schema';
-import { UserService } from 'src/user/user.service';
 import { v4 as uuid } from 'uuid';
 
 @Injectable()
@@ -19,7 +18,6 @@ export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     @InjectModel('User') private readonly userModel: Model<DUser>,
-    private userService: UserService,
     private configService: ConfigService,
   ) {}
 
@@ -66,12 +64,9 @@ export class AuthService {
       refreshToken = await this.generateNewRefreshToken(user._id);
     }
 
-    // Set the current user in the user service
-    this.userService.currentUser = user;
-
     // Return the user object, access token, and refresh token
     return {
-      user: this.userService.currentUser,
+      user,
       accessToken,
       refreshToken,
     };
@@ -115,15 +110,31 @@ export class AuthService {
     // Save the user document to the database
     await user.save();
 
-    // Set the current user in the user service
-    this.userService.currentUser = user;
-
     // Return the user object, access token, and refresh token
     return {
-      user: this.userService.currentUser,
+      user,
       accessToken,
       refreshToken,
     };
+  }
+
+  /**
+   * Logs out a user by removing their refresh token.
+   * @param userId The user's ID.
+   * @returns A success message.
+   * @throws NotFoundException if the user does not exist.
+   */
+  async logout(userId: string): Promise<{ message: string }> {
+    const user = await this.findUserById(userId);
+
+    if (!user) {
+      throw new NotFoundException('User does not exist');
+    }
+
+    user.refreshToken = null;
+    await user.save();
+
+    return { message: 'User logged out successfully' };
   }
 
   /**
@@ -178,8 +189,14 @@ export class AuthService {
    * @throws Error if the token is invalid.
    */
   validateToken(token: string) {
-    return this.jwtService.verify(token, {
-      secret: this.configService.get<string>('JWT_SECRET'),
-    });
+    try {
+      this.jwtService.verify(token, {
+        secret: this.configService.get<string>('JWT_SECRET'),
+      });
+    } catch {
+      throw new ForbiddenException('Invalid token');
+    }
+
+    return true;
   }
 }
