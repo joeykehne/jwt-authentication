@@ -40,11 +40,15 @@ export class AppComponent {
 			const { accessToken } = await this.http.post<{
 				user: any;
 				accessToken: string;
-			}>('auth/register', {
-				email: 'email@email.com',
-				password: 'changeme',
-				name: 'User',
-			});
+			}>(
+				'auth/register',
+				{
+					email: 'email@email.com',
+					password: 'changeme',
+					name: 'User',
+				},
+				true
+			);
 			this.http.accessToken = accessToken;
 			console.log(accessToken);
 		} catch (error) {
@@ -58,10 +62,14 @@ export class AppComponent {
 			const { accessToken } = await this.http.post<{
 				user: any;
 				accessToken: string;
-			}>('auth/login', {
-				email: 'email@email.com',
-				password: 'changeme',
-			});
+			}>(
+				'auth/login',
+				{
+					email: 'email@email.com',
+					password: 'changeme',
+				},
+				true
+			);
 			this.http.accessToken = accessToken;
 			console.log(accessToken);
 		} catch (error) {
@@ -72,7 +80,7 @@ export class AppComponent {
 	// Logs out the current user and clears the access token
 	async logout() {
 		try {
-			await this.http.get('auth/logout');
+			await this.http.get('auth/logout', true);
 			this.http.accessToken = '';
 			console.log('Logged out');
 		} catch (error) {

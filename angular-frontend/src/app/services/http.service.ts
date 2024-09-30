@@ -30,19 +30,22 @@ export class HttpService {
 	}
 
 	// Makes a GET request with the given path and returns a promise of the response
-	private async makeGetRequest<T>(path: string): Promise<T> {
+	private async makeGetRequest<T>(
+		path: string,
+		withCredentials = false
+	): Promise<T> {
 		return firstValueFrom(
 			this.http.get<T>(`${environment.apiUrl}/${path}`, {
 				headers: this.getHeaders(),
-				withCredentials: true,
+				withCredentials,
 			})
 		);
 	}
 
 	// Public method to make a GET request, tries to refresh token if the request fails
-	async get<T>(path: string): Promise<T> {
+	async get<T>(path: string, withCredentials = false): Promise<T> {
 		try {
-			return await this.makeGetRequest<T>(path);
+			return await this.makeGetRequest<T>(path, withCredentials);
 		} catch (error) {
 			// Attempt to refresh the access token if the request fails
 			const freshAccessToken = await this.requestNewAccessToken();
@@ -52,24 +55,32 @@ export class HttpService {
 				// this.router.navigate(['/login']);
 				return {} as T;
 			}
-			return await this.makeGetRequest<T>(path);
+			return await this.makeGetRequest<T>(path, withCredentials);
 		}
 	}
 
 	// Makes a POST request with the given path and data, returns a promise of the response
-	private async makePostRequest<T>(path: string, data: object): Promise<T> {
+	private async makePostRequest<T>(
+		path: string,
+		data: object,
+		withCredentials = false
+	): Promise<T> {
 		return firstValueFrom(
 			this.http.post<T>(`${environment.apiUrl}/${path}`, data, {
 				headers: this.getHeaders(),
-				withCredentials: true,
+				withCredentials,
 			})
 		);
 	}
 
 	// Public method to make a POST request, tries to refresh token if the request fails
-	async post<T>(path: string, data: object): Promise<T> {
+	async post<T>(
+		path: string,
+		data: object,
+		withCredentials = false
+	): Promise<T> {
 		try {
-			return await this.makePostRequest<T>(path, data);
+			return await this.makePostRequest<T>(path, data, withCredentials);
 		} catch (error) {
 			// Attempt to refresh the access token if the request fails
 			const freshAccessToken = await this.requestNewAccessToken();
