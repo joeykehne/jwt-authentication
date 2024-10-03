@@ -66,7 +66,6 @@ export class AuthService {
 
     // Return the user object, access token, and refresh token
     return {
-      user,
       accessToken,
       refreshToken,
     };
@@ -112,7 +111,6 @@ export class AuthService {
 
     // Return the user object, access token, and refresh token
     return {
-      user,
       accessToken,
       refreshToken,
     };

@@ -37,7 +37,7 @@ export class AuthController {
       throw new ForbiddenException('Email and password are required');
     }
 
-    const { user, accessToken, refreshToken } = await this.auth.login(
+    const { accessToken, refreshToken } = await this.auth.login(
       body.email,
       body.password,
     );
@@ -66,7 +66,7 @@ export class AuthController {
       throw new ForbiddenException('Email and password are required');
     }
 
-    const { user, accessToken, refreshToken } = await this.auth.register(body);
+    const { accessToken, refreshToken } = await this.auth.register(body);
 
     // Set refresh token as a cookie
     res.cookie('refreshToken', refreshToken, {
