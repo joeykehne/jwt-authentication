@@ -9,9 +9,11 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { ProtectedComponent } from './pages/protected/protected.component';
+import { LoginComponent } from './pages/login/login.component';
 
 @NgModule({
-	declarations: [AppComponent],
+	declarations: [AppComponent, ProtectedComponent, LoginComponent],
 	imports: [
 		BrowserModule,
 		AppRoutingModule,
