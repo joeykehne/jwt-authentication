@@ -7,7 +7,7 @@ import {
 import { AuthService } from './auth.service';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class AdminGuard implements CanActivate {
   constructor(private authService: AuthService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -27,6 +27,10 @@ export class AuthGuard implements CanActivate {
 
     // Check if token is valid
     const tokenValid = this.authService.validateToken(tokenValue);
+
+    if (!tokenValid.roles.includes('admin')) {
+      throw new UnauthorizedException('Unauthorized');
+    }
 
     // add user to request object
     request.user = tokenValid;

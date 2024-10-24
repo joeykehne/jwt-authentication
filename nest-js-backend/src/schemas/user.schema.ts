@@ -14,17 +14,20 @@ export class User {
   @Prop({ select: false })
   password: string;
 
-  @Prop()
+  @Prop({ unique: true })
   email: string;
 
   @Prop()
   resetID: string;
 
-  @Prop()
+  @Prop({ select: false })
   refreshToken: string;
 
   @Prop()
   isPaying: boolean;
+
+  @Prop()
+  roles: string[];
 
   @Prop({ select: false })
   __v: number;
