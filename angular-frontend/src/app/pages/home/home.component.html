@@ -2,18 +2,11 @@
 	<div class="text-4xl">Jwt Authentication</div>
 
 	<pre
-		>{{ decodedToken | json }}
+		>{{ decodedToken ? (decodedToken | json) : "No token" }}
 	</pre
 	>
 
 	<button (click)="logAccessToken()" class="btn w-fit btn-primary">
 		Log access token
 	</button>
-	<button (click)="register()" class="btn w-fit btn-primary">Register</button>
-	<button (click)="login()" class="btn w-fit btn-primary">Login</button>
-	<button (click)="logout()" class="btn w-fit btn-primary">Logout</button>
-	<button (click)="getProtected()" class="btn w-fit btn-primary">
-		Get Protected
-	</button>
-	<button (click)="getAdmin()" class="btn w-fit btn-primary">Get Admin</button>
 </div>

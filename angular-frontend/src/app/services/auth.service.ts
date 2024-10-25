@@ -51,6 +51,7 @@ export class AuthService {
 		try {
 			const decodedToken: any = jwt_decode.jwtDecode(accessToken);
 			return {
+				name: decodedToken.name,
 				email: decodedToken.email,
 				roles: decodedToken.roles,
 			};
@@ -93,9 +94,6 @@ export class AuthService {
 				withCredentials: true,
 			})
 		);
-
-		this.router.navigate(['/login']);
-		location.reload();
 	}
 
 	getAccessToken(): Observable<string> {

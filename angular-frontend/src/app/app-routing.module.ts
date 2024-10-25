@@ -1,8 +1,31 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AdminGuard } from './guards/admin.guard';
+import { AuthGuard } from './guards/auth.guard';
+import { LoggedInGuard } from './guards/logged-in.guard';
+import { LoginComponent } from './pages/_auth/login/login.component';
+import { LogoutComponent } from './pages/_auth/logout/logout.component';
+import { RegisterComponent } from './pages/_auth/register/register.component';
+import { AdminComponent } from './pages/admin/admin.component';
 import { HomeComponent } from './pages/home/home.component';
+import { ProtectedComponent } from './pages/protected/protected.component';
 
-const routes: Routes = [{ path: '', component: HomeComponent }];
+const routes: Routes = [
+	{ path: '', component: HomeComponent },
+	{ path: 'login', component: LoginComponent, canActivate: [LoggedInGuard] },
+	{
+		path: 'register',
+		component: RegisterComponent,
+		canActivate: [LoggedInGuard],
+	},
+	{ path: 'logout', component: LogoutComponent },
+	{
+		path: 'protected',
+		component: ProtectedComponent,
+		canActivate: [AuthGuard],
+	},
+	{ path: 'admin', component: AdminComponent, canActivate: [AdminGuard] },
+];
 
 @NgModule({
 	imports: [RouterModule.forRoot(routes)],

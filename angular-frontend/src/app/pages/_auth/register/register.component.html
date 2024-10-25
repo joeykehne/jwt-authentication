@@ -1,0 +1,170 @@
+<section class="p-5 flex justify-center">
+	<div class="md:w-[28rem] w-[90vw] my-20">
+		<div class="flex justify-center">
+			<div class="w-full max-w-md">
+				<div class="card bg-neutral shadow-xl">
+					<div class="card-body">
+						<h2 class="text-center text-2xl mb-6">Register</h2>
+						<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+							<div class="form-control">
+								<label for="name" class="label">
+									<span class="label-text">Name</span>
+								</label>
+								<input
+									type="text"
+									id="name"
+									formControlName="name"
+									placeholder="Enter your name"
+									class="input md:input-md input-sm input-bordered w-full"
+								/>
+								<div
+									*ngIf="
+										registerForm.get('name')?.touched &&
+										registerForm.get('name')?.errors
+									"
+								>
+									<small
+										class="text-error"
+										*ngIf="registerForm.get('name')?.errors?.['required']"
+									>
+										Name is required.
+									</small>
+								</div>
+							</div>
+							<div class="form-control">
+								<label for="email" class="label">
+									<span class="label-text">Email</span>
+								</label>
+								<input
+									type="email"
+									id="email"
+									formControlName="email"
+									placeholder="Enter your email"
+									class="input md:input-md input-sm input-bordered w-full"
+								/>
+								<div
+									*ngIf="
+										registerForm.get('email')?.touched &&
+										registerForm.get('email')?.errors
+									"
+								>
+									<small
+										class="text-error"
+										*ngIf="registerForm.get('email')?.errors?.['required']"
+									>
+										Email is required.
+									</small>
+									<small
+										class="text-error"
+										*ngIf="registerForm.get('email')?.errors?.['email']"
+									>
+										Please enter a valid email.
+									</small>
+								</div>
+							</div>
+							<div class="form-control">
+								<label for="password" class="label">
+									<span class="label-text">Password</span>
+								</label>
+								<input
+									type="password"
+									id="password"
+									formControlName="password"
+									placeholder="Enter your password"
+									class="input md:input-md input-sm input-bordered w-full"
+								/>
+								<div
+									*ngIf="
+										registerForm.get('password')?.touched &&
+										registerForm.get('password')?.errors
+									"
+								>
+									<small
+										class="text-error"
+										*ngIf="registerForm.get('password')?.errors?.['required']"
+									>
+										Password is required.
+									</small>
+									<small
+										class="text-error"
+										*ngIf="registerForm.get('password')?.errors?.['minlength']"
+									>
+										Password must be at least 6 characters long.
+									</small>
+									<small
+										class="text-error"
+										*ngIf="registerForm.get('password')?.errors?.['strong']"
+									>
+										Password must contain at least one number, one lowercase and
+										one uppercase letter.
+									</small>
+								</div>
+							</div>
+							<div class="form-control">
+								<label for="confirmPassword" class="label">
+									<span class="label-text">Confirm Password</span>
+								</label>
+								<input
+									type="password"
+									id="confirmPassword"
+									formControlName="confirmPassword"
+									placeholder="Confirm your password"
+									class="input md:input-md input-sm input-bordered w-full"
+								/>
+								<div
+									*ngIf="
+										registerForm.get('confirmPassword')?.touched &&
+										registerForm.get('confirmPassword')?.errors
+									"
+								>
+									<small
+										class="text-error"
+										*ngIf="registerForm.get('confirmPassword')?.errors?.['required']"
+									>
+										Confirmation is required.
+									</small>
+								</div>
+								<div *ngIf="registerForm.get('confirmPassword')?.touched">
+									<small
+										class="text-error"
+										*ngIf="registerForm.errors?.['mismatch']"
+									>
+										Passwords do not match.
+									</small>
+								</div>
+							</div>
+							<label *ngIf="emailAlreadyExists" class="label">
+								<span class="label-text-alt text-red-500"
+									>This email is already rergistered. You can login
+									<u
+										><b><a href="login">here.</a></b></u
+									>
+								</span>
+							</label>
+
+							<label *ngIf="somethingElseWrong" class="label">
+								<span class="label-text-alt text-red-500"
+									>Something went wrong. Please try again.</span
+								>
+							</label>
+							<div class="form-control mt-6 gap-4">
+								<button
+									[disabled]="registerForm.invalid"
+									class="btn btn-primary"
+								>
+									Register
+								</button>
+								<span>
+									Already have an account?
+									<a class="hover:underline" routerLink="/login"
+										>Login here.</a
+									></span
+								>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>

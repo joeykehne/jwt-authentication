@@ -51,17 +51,14 @@ export class AuthController {
 
   @Post('register')
   async register(
-    @Body() body: { email: string; password: string },
+    @Body() body: { email: string; name: string; password: string },
     @Res() res: Response,
   ) {
     if (!body.email || !body.password) {
       throw new ForbiddenException('Email and password are required');
     }
 
-    const { accessToken, refreshToken } = await this.authService.register(
-      body.email,
-      body.password,
-    );
+    const { accessToken, refreshToken } = await this.authService.register(body);
 
     // Set refresh token as a cookie
     res.cookie('refreshToken', refreshToken, {

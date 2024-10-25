@@ -65,10 +65,10 @@ export class AuthService {
     };
   }
 
-  async register(email: string, password: string) {
+  async register(newUser: { email: string; name: string; password: string }) {
     // Check if the user exists
     const userFound = await this.userModel.findOne({
-      email,
+      email: newUser.email,
     });
 
     if (userFound) {
@@ -76,10 +76,10 @@ export class AuthService {
     }
 
     const user = {
+      ...newUser,
       _id: randomUUID(),
-      email: email,
       roles: [],
-      password: await bcrypt.hash(password, 10),
+      password: await bcrypt.hash(newUser.password, 10),
     } as DUser;
 
     // Create a new user
@@ -164,14 +164,14 @@ export class AuthService {
 
   async generateNewAccessToken(user: DUser): Promise<string> {
     return this.jwtService.sign(
-      { _id: user._id, email: user.email, roles: user.roles },
+      { _id: user._id, name: user.name, email: user.email, roles: user.roles },
       { expiresIn: accessTokenExpiresIn },
     );
   }
 
   async generateNewRefreshToken(user: DUser): Promise<string> {
     const refreshToken = this.jwtService.sign(
-      { _id: user._id, email: user.email },
+      { _id: user._id, name: user.name, email: user.email },
       { expiresIn: refreshTokenExpiresIn },
     );
 

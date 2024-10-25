@@ -1,5 +1,6 @@
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import {
 	MAT_DIALOG_DEFAULT_OPTIONS,
 	MatDialogModule,
@@ -9,9 +10,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { FooterComponent } from './components/footer/footer.component';
+import { NavbarComponent } from './components/navbar/navbar.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { LoginComponent } from './pages/_auth/login/login.component';
+import { LogoutComponent } from './pages/_auth/logout/logout.component';
+import { RegisterComponent } from './pages/_auth/register/register.component';
 import { HomeComponent } from './pages/home/home.component';
-import { LoginComponent } from './pages/login/login.component';
 import { ProtectedComponent } from './pages/protected/protected.component';
 
 @NgModule({
@@ -20,6 +25,10 @@ import { ProtectedComponent } from './pages/protected/protected.component';
 		ProtectedComponent,
 		LoginComponent,
 		HomeComponent,
+		RegisterComponent,
+		LogoutComponent,
+		NavbarComponent,
+		FooterComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -27,6 +36,7 @@ import { ProtectedComponent } from './pages/protected/protected.component';
 		BrowserAnimationsModule,
 		MatDialogModule,
 		HttpClientModule,
+		ReactiveFormsModule,
 	],
 	providers: [
 		{

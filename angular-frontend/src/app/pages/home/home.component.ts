@@ -3,7 +3,6 @@ import { Component } from '@angular/core';
 import * as jwt_decode from 'jwt-decode';
 import { firstValueFrom } from 'rxjs';
 import { AuthService } from 'src/app/services/auth.service';
-import { environment } from 'src/environments/environment';
 
 @Component({
 	selector: 'app-home',
@@ -25,40 +24,5 @@ export class HomeComponent {
 		const accessToken = await firstValueFrom(this.authService.getAccessToken());
 
 		console.log(accessToken);
-	}
-
-	async register() {
-		await this.authService.register({
-			email: 'info@kehne-it.de',
-			password: 'password',
-			roles: ['admin'],
-		});
-	}
-
-	async login() {
-		await this.authService.login({
-			email: 'info@kehne-it.de',
-			password: 'password',
-		});
-	}
-
-	async logout() {
-		this.authService.logout();
-	}
-
-	async getProtected() {
-		const response = await firstValueFrom(
-			this.http.get(`${environment.apiUrl}/protected`)
-		);
-
-		console.log(response);
-	}
-
-	async getAdmin() {
-		const response = await firstValueFrom(
-			this.http.get(`${environment.apiUrl}/admin`)
-		);
-
-		console.log(response);
 	}
 }
