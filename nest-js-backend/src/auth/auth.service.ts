@@ -3,6 +3,7 @@ import {
   ForbiddenException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
@@ -40,7 +41,7 @@ export class AuthService {
 
     // If the password is invalid, throw a ForbiddenException
     if (!valid) {
-      throw new ForbiddenException('Invalid password');
+      throw new UnauthorizedException('Invalid password');
     }
 
     // Generate a new access token
