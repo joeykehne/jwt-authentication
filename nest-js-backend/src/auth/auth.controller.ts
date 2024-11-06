@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   ForbiddenException,
@@ -28,25 +29,24 @@ export class AuthController {
     @Body() body: { email: string; password: string },
     @Res() res: Response,
   ) {
-    if (!body.email || !body.password) {
-      throw new ForbiddenException('Email and password are required');
+    const { email, password } = body;
+
+    if (!email || !password) {
+      throw new BadRequestException('Email and password are required');
     }
 
     const { accessToken, refreshToken } = await this.authService.login(
-      body.email,
-      body.password,
+      email,
+      password,
     );
 
-    // Set refresh token as a cookie
+    // Set refresh token as an HTTP-only cookie
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       maxAge: refreshTokenExpiresIn * 1000, // Convert to milliseconds
     });
 
-    // Send user data and access token
-    res.send({
-      accessToken,
-    });
+    res.send({ accessToken });
   }
 
   @Post('register')
@@ -54,22 +54,19 @@ export class AuthController {
     @Body() body: { email: string; name: string; password: string },
     @Res() res: Response,
   ) {
-    if (!body.email || !body.password) {
-      throw new ForbiddenException('Email and password are required');
+    if (!body.email || !body.name || !body.password) {
+      throw new BadRequestException('Email, name, and password are required');
     }
 
     const { accessToken, refreshToken } = await this.authService.register(body);
 
-    // Set refresh token as a cookie
+    // Set refresh token as an HTTP-only cookie
     res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
-      maxAge: refreshTokenExpiresIn * 1000, // Convert to milliseconds
+      maxAge: refreshTokenExpiresIn * 1000,
     });
 
-    // Send user data and access token
-    res.send({
-      accessToken,
-    });
+    res.send({ accessToken });
   }
 
   @Get('getAccessToken')
@@ -95,8 +92,10 @@ export class AuthController {
     const accessToken = await this.authService.generateNewAccessToken(user);
 
     // Generate a new refresh token
-    const newRefreshToken =
-      await this.authService.generateNewRefreshToken(user);
+    const newRefreshToken = await this.authService.generateNewRefreshToken(
+      user,
+      refreshToken,
+    );
 
     res.cookie('refreshToken', newRefreshToken, {
       httpOnly: true,
@@ -109,27 +108,12 @@ export class AuthController {
 
   @Get('logout')
   async logout(@Req() req: Request, @Res() res: Response) {
-    // get user id from token in cookie
-    const refreshToken = req.cookies?.['refreshToken'];
-
-    // Delete the refresh token from the database
-    let payload;
-    try {
-      payload = this.jwtService.verify(refreshToken, {
-        secret: this.configService.get<string>('JWT_SECRET'),
-      });
-      this.authService.logout(payload.email);
-    } catch (e) {}
-
-    // Clear the refresh token cookie
-    res.cookie('refreshToken', '', {
-      httpOnly: true,
-      maxAge: 0,
-    });
-
-    res.send({
-      message: 'Logged out successfully',
-    });
+    const refreshToken = req.cookies['refreshToken'];
+    if (refreshToken) {
+      await this.authService.logout(refreshToken);
+    }
+    res.clearCookie('refreshToken', { httpOnly: true });
+    res.send({ message: 'Logged out successfully' });
   }
 
   @UseGuards(AdminGuard)

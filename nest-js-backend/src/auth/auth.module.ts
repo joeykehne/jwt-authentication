@@ -1,12 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { MongooseModule } from '@nestjs/mongoose';
-import { UserSchema } from 'src/schemas/user.schema';
+import { ScheduleModule } from '@nestjs/schedule';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from 'src/user/user.entity';
 import { UserModule } from 'src/user/user.module';
 import { AuthController } from './auth.controller';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
+import { RefreshToken } from './refreshToken.entity';
 
 @Module({
   imports: [
@@ -18,8 +20,9 @@ import { AuthService } from './auth.service';
         secret: configService.get<string>('JWT_SECRET'),
       }),
     }),
-    MongooseModule.forFeature([{ name: 'User', schema: UserSchema }]),
+    TypeOrmModule.forFeature([User, RefreshToken]),
     UserModule,
+    ScheduleModule.forRoot(),
   ],
   providers: [AuthService, AuthGuard],
   controllers: [AuthController],
