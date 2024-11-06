@@ -22,7 +22,7 @@ export class AuthGuard implements CanActivate {
 				} else {
 					this.toastService.addToast({
 						message: 'You need to login to access this page',
-						type: 'alert-error',
+						type: 'error',
 					});
 
 					// Token is not available, redirect to login
@@ -33,7 +33,7 @@ export class AuthGuard implements CanActivate {
 			catchError(() => {
 				this.toastService.addToast({
 					message: 'An error occurred. Please try again',
-					type: 'alert-error',
+					type: 'error',
 				});
 
 				// Handle any errors and redirect to login

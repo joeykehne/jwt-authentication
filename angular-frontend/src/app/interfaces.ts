@@ -1,7 +1,7 @@
 export interface I_Toast {
 	id?: string;
 	message: string;
-	type: 'alert-success' | 'alert-info' | 'alert-error';
+	type: 'success' | 'info' | 'error';
 }
 
 export interface I_User {

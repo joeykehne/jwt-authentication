@@ -11,7 +11,6 @@ import { JwtService } from '@nestjs/jwt';
 import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
-import { randomUUID } from 'crypto';
 import { accessTokenExpiresIn, refreshTokenExpiresIn } from 'src/constants';
 import { User } from 'src/user/user.entity';
 import { LessThan, Repository } from 'typeorm';
@@ -44,6 +43,7 @@ export class AuthService {
     const user = await this.userRepository.findOne({
       where: { email },
       select: ['_id', 'email', 'name', 'password', 'roles'], // Include necessary fields
+      relations: ['roles'],
     });
 
     if (!user) {
@@ -91,8 +91,6 @@ export class AuthService {
       email,
       name,
       password: hashedPassword,
-      _id: randomUUID(),
-      roles: 'user', // Assign default roles as needed
     });
 
     // Save the new user to the database
@@ -112,20 +110,30 @@ export class AuthService {
     await this.refreshTokenRepository.delete({ refreshToken });
   }
 
-  validateToken(token: string) {
+  async validateToken(token: string) {
     try {
-      return this.jwtService.verify(token, {
+      const payload = this.jwtService.verify(token, {
         secret: this.configService.get<string>('JWT_SECRET'),
       });
+
+      const user = await this.userRepository.findOne({
+        where: { _id: payload.sub },
+        relations: ['roles', 'roles.permissions'],
+      });
+
+      if (!user) {
+        throw new UnauthorizedException('User not found');
+      }
+
+      return user;
     } catch {
       throw new ForbiddenException('Invalid token');
     }
   }
 
   async validateRefreshToken(refreshToken: string): Promise<User> {
-    let payload;
     try {
-      payload = this.jwtService.verify(refreshToken, {
+      this.jwtService.verify(refreshToken, {
         secret: this.configService.get<string>('JWT_SECRET'),
       });
     } catch {
@@ -134,7 +142,7 @@ export class AuthService {
 
     const tokenEntity = await this.refreshTokenRepository.findOne({
       where: { refreshToken },
-      relations: ['user'],
+      relations: ['user', 'user.roles'],
     });
 
     if (!tokenEntity || tokenEntity.expiresAt < new Date()) {
@@ -146,7 +154,11 @@ export class AuthService {
 
   async generateNewAccessToken(user: User): Promise<string> {
     return this.jwtService.sign(
-      { _id: user._id, name: user.name, email: user.email, roles: user.roles },
+      {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+      },
       { expiresIn: accessTokenExpiresIn },
     );
   }
@@ -179,5 +191,25 @@ export class AuthService {
     await this.refreshTokenRepository.save(newRefreshToken);
 
     return refreshToken;
+  }
+
+  async canAccess(request: any, permission: string) {
+    const token = request.headers['authorization'];
+
+    if (!token) throw new UnauthorizedException('No token provided');
+
+    const [, tokenValue] = token.split(' ');
+
+    if (!tokenValue) throw new UnauthorizedException('No token provided');
+
+    const user = await this.validateToken(tokenValue);
+
+    if (!user.roles.some((role) => role.name === 'admin')) {
+      return user.roles
+        .flatMap((role) => role.permissions)
+        .map((permission) => permission.name)
+        .includes(permission);
+    }
+    return true;
   }
 }

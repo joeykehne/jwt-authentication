@@ -22,7 +22,7 @@ export class LoggedInGuard implements CanActivate {
 				} else {
 					this.toastService.addToast({
 						message: 'You are already logged in',
-						type: 'alert-info',
+						type: 'info',
 					});
 					// If there is a token, redirect to home
 					this.router.navigate(['/']);

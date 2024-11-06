@@ -1,37 +1,57 @@
 import {
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
 import { AuthService } from './auth.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private reflector: Reflector,
+  ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    // Get the request object
-    const request = context.switchToHttp().getRequest();
+    const requiredPermissions = this.reflector.get<string[]>(
+      'permissions',
+      context.getHandler(),
+    );
 
-    // get token from headers
+    const request = context.switchToHttp().getRequest();
     const token = request.headers['authorization'];
 
     if (!token) throw new UnauthorizedException('No token provided');
 
-    // split token
-    const [_, tokenValue] = token.split(' ');
+    const [, tokenValue] = token.split(' ');
 
-    // Check if token is provided
     if (!tokenValue) throw new UnauthorizedException('No token provided');
 
-    // Check if token is valid
-    const tokenValid = this.authService.validateToken(tokenValue);
+    const user = await this.authService.validateToken(tokenValue);
+    request.user = user;
 
-    // add user to request object
-    request.user = tokenValid;
+    if (
+      !requiredPermissions ||
+      user.roles.some((role) => role.name === 'admin')
+    ) {
+      return true;
+    }
 
-    // Return true if token is valid
-    return tokenValid;
+    const userPermissions = user.roles
+      .flatMap((role) => role.permissions)
+      .map((permission) => permission.name);
+
+    const hasPermission = requiredPermissions.every((permission) =>
+      userPermissions.includes(permission),
+    );
+
+    if (!hasPermission) {
+      throw new ForbiddenException('Insufficient permissions');
+    }
+
+    return true;
   }
 }

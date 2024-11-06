@@ -7,13 +7,11 @@ import {
   Post,
   Req,
   Res,
-  UseGuards,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
 import { refreshTokenExpiresIn } from 'src/constants';
-import { AdminGuard } from './admin.guard';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
@@ -116,7 +114,11 @@ export class AuthController {
     res.send({ message: 'Logged out successfully' });
   }
 
-  @UseGuards(AdminGuard)
+  @Post('canAccess')
+  async canAccess(@Req() req: Request, @Body() body: { permission: string }) {
+    return this.authService.canAccess(req, body.permission);
+  }
+
   @Post('logOutUser')
   async logOutUser(@Body() body: { email: string }) {
     return this.authService.logout(body.email);

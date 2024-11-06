@@ -134,6 +134,12 @@ export class AuthService {
 		return this.tokenRequest$;
 	}
 
+	canAccess(permission: string): Observable<boolean> {
+		return this.http.post<boolean>(`${environment.apiUrl}/auth/canAccess`, {
+			permission,
+		});
+	}
+
 	forceNewAccessToken(): Observable<string> {
 		return this.http
 			.get<{ accessToken: string }>(

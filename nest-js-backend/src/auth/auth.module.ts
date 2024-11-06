@@ -8,7 +8,11 @@ import { UserModule } from 'src/user/user.module';
 import { AuthController } from './auth.controller';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
+import { Permission } from './permission/permission.entity';
+import { PermissionModule } from './permission/permission.module';
 import { RefreshToken } from './refreshToken.entity';
+import { Role } from './role/role.entity';
+import { RoleModule } from './role/role.module';
 
 @Module({
   imports: [
@@ -20,8 +24,10 @@ import { RefreshToken } from './refreshToken.entity';
         secret: configService.get<string>('JWT_SECRET'),
       }),
     }),
-    TypeOrmModule.forFeature([User, RefreshToken]),
+    TypeOrmModule.forFeature([User, Role, Permission, RefreshToken]),
     UserModule,
+    RoleModule,
+    PermissionModule,
     ScheduleModule.forRoot(),
   ],
   providers: [AuthService, AuthGuard],

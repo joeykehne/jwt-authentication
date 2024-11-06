@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AdminGuard } from './guards/admin.guard';
 import { AuthGuard } from './guards/auth.guard';
 import { LoggedInGuard } from './guards/logged-in.guard';
+import { PermissionGuard } from './guards/permission.guard';
 import { LoginComponent } from './pages/_auth/login/login.component';
 import { LogoutComponent } from './pages/_auth/logout/logout.component';
 import { RegisterComponent } from './pages/_auth/register/register.component';
@@ -24,7 +24,12 @@ const routes: Routes = [
 		component: ProtectedComponent,
 		canActivate: [AuthGuard],
 	},
-	{ path: 'admin', component: AdminComponent, canActivate: [AdminGuard] },
+	{
+		path: 'admin',
+		component: AdminComponent,
+		canActivate: [PermissionGuard],
+		data: { requiredPermission: 'admin' },
+	},
 ];
 
 @NgModule({
