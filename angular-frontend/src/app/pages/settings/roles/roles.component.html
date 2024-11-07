@@ -1,1 +1,28 @@
-<p>roles works!</p>
+<h1 class="text-3xl mb-4">Roles</h1>
+
+<table class="table w-full">
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Permissions</th>
+			<th></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr *ngFor="let role of roles" class="hover">
+			<td>{{ role.name }}</td>
+			<td>
+				<ul *ngIf="role.permissions.length > 0; else emptyCell">
+					<li *ngFor="let permission of role.permissions">
+						{{ permission.name }}
+					</li>
+				</ul>
+			</td>
+			<td>
+				<button class="btn btn-outline btn-sm">Edit</button>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<ng-template #emptyCell>-</ng-template>

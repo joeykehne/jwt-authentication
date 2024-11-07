@@ -153,28 +153,15 @@ export class AuthService {
   }
 
   async generateNewAccessToken(user: User): Promise<string> {
-    // Reload user with roles and permissions using QueryBuilder
-    user = await this.userRepository
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.roles', 'role')
-      .leftJoinAndSelect('role.permissions', 'permission')
-      .where('user._id = :id', { id: user._id })
-      .getOne();
-
     if (!user) {
       throw new UnauthorizedException('User not found');
     }
-
-    const permissions = user.roles
-      .flatMap((role) => role.permissions)
-      .map((permission) => permission.name);
 
     return this.jwtService.sign(
       {
         _id: user._id,
         name: user.name,
         email: user.email,
-        permissions,
       },
       { expiresIn: accessTokenExpiresIn },
     );

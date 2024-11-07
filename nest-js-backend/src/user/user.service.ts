@@ -14,6 +14,13 @@ export class UserService {
     private readonly roleRepository: Repository<Role>,
   ) {}
 
+  // Find all users
+  async findAll(): Promise<User[]> {
+    return this.userRepository.find({
+      relations: ['roles', 'roles.permissions'],
+    });
+  }
+
   // Assign roles to a user
   async assignRoles(userId: string, roleIds: string[]): Promise<User> {
     const user = await this.userRepository.findOne({

@@ -12,7 +12,7 @@ const routes: Routes = [
 		path: 'settings',
 		component: SettingsComponent,
 		children: [
-			{ path: '', redirectTo: 'users', pathMatch: 'full' },
+			{ path: '', redirectTo: 'profile', pathMatch: 'full' },
 			{ path: 'profile', component: ProfileComponent },
 			{
 				path: 'roles',

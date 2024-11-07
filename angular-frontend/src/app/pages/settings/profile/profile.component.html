@@ -1,1 +1,5 @@
-<p>profile works!</p>
+<h1 class="text-3xl mb-4">Profile</h1>
+
+<pre class="bg-base-200 p-4 rounded-xl w-fit">{{
+	authService.user$ | async | json
+}}</pre>

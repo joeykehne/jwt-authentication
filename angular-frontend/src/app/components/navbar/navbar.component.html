@@ -7,14 +7,14 @@
 			<li *ngIf="authService.isLoggedIn$ | async">
 				<a routerLink="/protected">Protected</a>
 			</li>
-			<li>
+			<li *ngIf="authService.isLoggedIn$ | async">
 				<a routerLink="/settings">Settings</a>
 			</li>
 			<li *ngIf="!(authService.isLoggedIn$ | async)">
-				<a routerLink="/register">Register</a>
+				<a routerLink="/login">Login</a>
 			</li>
 			<li *ngIf="!(authService.isLoggedIn$ | async)">
-				<a routerLink="/login">Login</a>
+				<a routerLink="/register">Register</a>
 			</li>
 			<li *ngIf="authService.isLoggedIn$ | async">
 				<a routerLink="/logout">Logout</a>

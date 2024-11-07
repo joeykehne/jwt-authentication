@@ -21,9 +21,26 @@ export class AuthService {
 	private accessToken$ = new BehaviorSubject<string | null>(null);
 	private tokenRequest$: Observable<string> | null = null;
 	public loading$ = new BehaviorSubject<boolean>(false);
+
+	public user$ = this.accessToken$.pipe(
+		switchMap((accessToken) => {
+			if (!accessToken) {
+				return of(null);
+			}
+
+			try {
+				const decodedToken: any = jwt_decode.jwtDecode(accessToken);
+				return of(decodedToken);
+			} catch (e) {
+				return of(null);
+			}
+		})
+	);
+
 	public isLoggedIn$ = this.accessToken$
 		.asObservable()
 		.pipe(switchMap((accessToken) => of(!!accessToken)));
+
 	public isAdmin$ = this.accessToken$.pipe(
 		switchMap((accessToken) => {
 			if (!accessToken) {
@@ -40,24 +57,6 @@ export class AuthService {
 	);
 
 	constructor(private http: HttpClient) {}
-
-	async getLoggedInUser(): Promise<I_User | null> {
-		const accessToken = this.accessToken$.value;
-		if (!accessToken) {
-			return null;
-		}
-
-		try {
-			const decodedToken: any = jwt_decode.jwtDecode(accessToken);
-			return {
-				name: decodedToken.name,
-				email: decodedToken.email,
-				roles: decodedToken.roles,
-			};
-		} catch (e) {
-			return null;
-		}
-	}
 
 	async login({ email, password }: { email: string; password: string }) {
 		const response = await firstValueFrom(

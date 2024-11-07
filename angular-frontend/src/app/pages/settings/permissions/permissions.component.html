@@ -1,1 +1,20 @@
-<p>permissions works!</p>
+<h1 class="text-3xl mb-4">Permissions</h1>
+
+<table class="table w-full">
+	<thead>
+		<tr>
+			<th>Name</th>
+		</tr>
+		<tr></tr>
+	</thead>
+	<tbody>
+		<tr *ngFor="let permission of permissions" class="hover">
+			<td>{{ permission.name }}</td>
+			<td>
+				<button class="btn btn-outline btn-sm">Edit</button>
+			</td>
+		</tr>
+	</tbody>
+</table>
+
+<ng-template #emptyCell>-</ng-template>
