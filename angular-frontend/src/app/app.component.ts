@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { ToastService } from './services/toast.service';
 
@@ -7,13 +7,13 @@ import { ToastService } from './services/toast.service';
 	templateUrl: './app.component.html',
 	styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
 	constructor(
-		public authService: AuthService,
-		public toastService: ToastService
+		public toastService: ToastService,
+		private authService: AuthService
 	) {}
 
 	ngOnInit() {
-		this.authService.getAccessToken();
+		this.authService.getAccessToken().subscribe();
 	}
 }
