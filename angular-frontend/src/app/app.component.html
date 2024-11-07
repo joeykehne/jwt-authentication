@@ -4,7 +4,7 @@
 <div class="z-10 toast">
 	<div
 		*ngFor="let toast of toastService.toasts"
-		class="alert alert-{{ toast.type }}"
+		class="alert {{ 'alert-' + toast.type }}"
 	>
 		<span>{{ toast.message }}</span>
 	</div>

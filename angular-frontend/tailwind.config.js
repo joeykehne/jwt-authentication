@@ -10,4 +10,9 @@ module.exports = {
   daisyui: {
     themes: ["dark"],
   },
+  safelist: [
+    {
+      pattern: /alert-.+/,
+    }
+  ]
 }

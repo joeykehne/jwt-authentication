@@ -4,20 +4,20 @@
 	</div>
 	<div class="flex-none">
 		<ul class="menu menu-horizontal px-1">
-			<li>
-				<a routerLink="/register">Register</a>
-			</li>
-			<li>
-				<a routerLink="/login">Login</a>
-			</li>
-			<li>
-				<a routerLink="/logout">Logout</a>
-			</li>
-			<li>
+			<li *ngIf="authService.isLoggedIn$ | async">
 				<a routerLink="/protected">Protected</a>
 			</li>
-			<li>
+			<li *ngIf="authService.isAdmin$ | async">
 				<a routerLink="/admin">Admin</a>
+			</li>
+			<li *ngIf="!(authService.isLoggedIn$ | async)">
+				<a routerLink="/register">Register</a>
+			</li>
+			<li *ngIf="!(authService.isLoggedIn$ | async)">
+				<a routerLink="/login">Login</a>
+			</li>
+			<li *ngIf="authService.isLoggedIn$ | async">
+				<a routerLink="/logout">Logout</a>
 			</li>
 		</ul>
 	</div>

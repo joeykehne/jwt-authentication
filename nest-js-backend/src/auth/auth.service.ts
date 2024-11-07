@@ -27,7 +27,7 @@ export class AuthService {
     private readonly refreshTokenRepository: Repository<RefreshToken>,
   ) {}
 
-  @Cron('0 0 * * *') // Runs once a day at midnight
+  @Cron('0 * * * *') // Runs every hour
   async removeExpiredTokens() {
     await this.refreshTokenRepository.delete({
       expiresAt: LessThan(new Date()),
@@ -42,8 +42,8 @@ export class AuthService {
     // Load the user from the database with the password field
     const user = await this.userRepository.findOne({
       where: { email },
-      select: ['_id', 'email', 'name', 'password', 'roles'], // Include necessary fields
-      relations: ['roles'],
+      select: ['_id', 'email', 'name', 'password'], // Include necessary fields
+      relations: ['roles', 'roles.permissions'],
     });
 
     if (!user) {
@@ -117,7 +117,7 @@ export class AuthService {
       });
 
       const user = await this.userRepository.findOne({
-        where: { _id: payload.sub },
+        where: { _id: payload._id },
         relations: ['roles', 'roles.permissions'],
       });
 
@@ -153,11 +153,28 @@ export class AuthService {
   }
 
   async generateNewAccessToken(user: User): Promise<string> {
+    // Reload user with roles and permissions using QueryBuilder
+    user = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.roles', 'role')
+      .leftJoinAndSelect('role.permissions', 'permission')
+      .where('user._id = :id', { id: user._id })
+      .getOne();
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const permissions = user.roles
+      .flatMap((role) => role.permissions)
+      .map((permission) => permission.name);
+
     return this.jwtService.sign(
       {
         _id: user._id,
         name: user.name,
         email: user.email,
+        permissions,
       },
       { expiresIn: accessTokenExpiresIn },
     );

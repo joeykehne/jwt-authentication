@@ -1,6 +1,5 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
 import * as jwt_decode from 'jwt-decode';
 import {
 	BehaviorSubject,
@@ -33,14 +32,14 @@ export class AuthService {
 
 			try {
 				const decodedToken: any = jwt_decode.jwtDecode(accessToken);
-				return of(decodedToken.roles.includes('admin'));
+				return of(decodedToken.permissions.includes('admin'));
 			} catch (e) {
 				return of(false);
 			}
 		})
 	);
 
-	constructor(private http: HttpClient, private router: Router) {}
+	constructor(private http: HttpClient) {}
 
 	async getLoggedInUser(): Promise<I_User | null> {
 		const accessToken = this.accessToken$.value;
