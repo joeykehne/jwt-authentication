@@ -115,8 +115,11 @@ export class AuthController {
   }
 
   @Post('canAccess')
-  async canAccess(@Req() req: Request, @Body() body: { permission: string }) {
-    return this.authService.canAccess(req, body.permission);
+  async canAccess(
+    @Req() req: Request,
+    @Body() body: { permissions: string[] },
+  ) {
+    return this.authService.canAccess(req, body.permissions);
   }
 
   @Post('logOutUser')

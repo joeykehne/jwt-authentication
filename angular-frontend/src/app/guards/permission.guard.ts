@@ -16,16 +16,20 @@ export class PermissionGuard implements CanActivate {
 	) {}
 
 	canActivate(route: ActivatedRouteSnapshot): Observable<boolean> {
-		const requiredPermission = route.data['requiredPermission'];
+		const requiredPermissions = route.data['permissions'];
 
 		// Get the access token
 		return this.authService.getAccessToken().pipe(
 			switchMap((token) => {
 				if (token) {
 					// Send permission check request to backend
-					return this.authService.canAccess(requiredPermission).pipe(
-						switchMap((hasPermission) => {
-							if (hasPermission) {
+					return this.authService.canAccess$(requiredPermissions).pipe(
+						switchMap((permissions: any) => {
+							const hasAllPermissions = requiredPermissions.every(
+								(permission: string) => permissions[permission]
+							);
+
+							if (hasAllPermissions) {
 								return of(true);
 							} else {
 								this.toastService.addToast({

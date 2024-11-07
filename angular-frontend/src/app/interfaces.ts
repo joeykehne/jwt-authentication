@@ -10,3 +10,8 @@ export interface I_User {
 	roles?: string[];
 	password?: string;
 }
+
+export interface I_NavSection {
+	name: string;
+	urls: { name: string; routerLink: string }[];
+}

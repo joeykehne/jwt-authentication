@@ -197,7 +197,10 @@ export class AuthService {
     return refreshToken;
   }
 
-  async canAccess(request: any, permission: string) {
+  async canAccess(
+    request: any,
+    permissions: string[],
+  ): Promise<{ [key: string]: boolean }> {
     const token = request.headers['authorization'];
 
     if (!token) throw new UnauthorizedException('No token provided');
@@ -208,12 +211,20 @@ export class AuthService {
 
     const user = await this.validateToken(tokenValue);
 
-    if (!user.roles.some((role) => role.name === 'admin')) {
-      return user.roles
-        .flatMap((role) => role.permissions)
-        .map((permission) => permission.name)
-        .includes(permission);
+    const userPermissions = user.roles
+      .flatMap((role) => role.permissions)
+      .map((permission) => permission.name);
+
+    const result: { [key: string]: boolean } = {};
+
+    for (const permission of permissions) {
+      if (userPermissions.includes('admin')) {
+        result[permission] = true;
+        continue;
+      }
+      result[permission] = userPermissions.includes(permission);
     }
-    return true;
+
+    return result;
   }
 }

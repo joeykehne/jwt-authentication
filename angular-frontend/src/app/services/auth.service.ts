@@ -132,10 +132,17 @@ export class AuthService {
 		return this.tokenRequest$;
 	}
 
-	canAccess(permission: string): Observable<boolean> {
-		return this.http.post<boolean>(`${environment.apiUrl}/auth/canAccess`, {
-			permission,
-		});
+	canAccess(permissions: string[]): Promise<{ [key: string]: boolean }> {
+		return firstValueFrom(this.canAccess$(permissions));
+	}
+
+	canAccess$(permissions: string[]): Observable<{ [key: string]: boolean }> {
+		return this.http.post<{ [key: string]: boolean }>(
+			`${environment.apiUrl}/auth/canAccess`,
+			{
+				permissions,
+			}
+		);
 	}
 
 	forceNewAccessToken(): Observable<string> {
