@@ -32,7 +32,6 @@ export class PermissionGuard implements CanActivate {
 									message: 'You are not authorized to access this page',
 									type: 'error',
 								});
-								this.router.navigate(['/']);
 								return of(false);
 							}
 						}),
@@ -41,7 +40,6 @@ export class PermissionGuard implements CanActivate {
 								message: 'An error occurred. Please try again',
 								type: 'error',
 							});
-							this.router.navigate(['/']);
 							return of(false);
 						})
 					);

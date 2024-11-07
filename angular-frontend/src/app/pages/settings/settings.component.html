@@ -19,12 +19,14 @@
 		<ul
 			class="menu md:rounded-xl bg-base-200 text-base-content min-h-full w-80 p-4"
 		>
-			<li class="menu-title">
-				<span>Identity and access</span>
-			</li>
-			<li><a routerLink="users">Users</a></li>
-			<li><a routerLink="roles">Roles</a></li>
-			<li><a routerLink="permissions">Permissions</a></li>
+			<div *ngFor="let navSection of navSections" class="mb-2">
+				<li class="menu-title">
+					<span>{{ navSection.name }}</span>
+				</li>
+				<li *ngFor="let url of navSection.urls">
+					<a [routerLink]="url.routerLink">{{ url.name }}</a>
+				</li>
+			</div>
 		</ul>
 	</div>
 </div>

@@ -7,8 +7,8 @@
 			<li *ngIf="authService.isLoggedIn$ | async">
 				<a routerLink="/protected">Protected</a>
 			</li>
-			<li *ngIf="authService.isAdmin$ | async">
-				<a routerLink="/admin">Admin</a>
+			<li>
+				<a routerLink="/settings">Settings</a>
 			</li>
 			<li *ngIf="!(authService.isLoggedIn$ | async)">
 				<a routerLink="/register">Register</a>

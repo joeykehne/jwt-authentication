@@ -16,9 +16,9 @@ import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { LoginComponent } from './pages/_auth/login/login.component';
 import { LogoutComponent } from './pages/_auth/logout/logout.component';
 import { RegisterComponent } from './pages/_auth/register/register.component';
-import { AdminModule } from './pages/admin/admin.module';
 import { HomeComponent } from './pages/home/home.component';
 import { ProtectedComponent } from './pages/protected/protected.component';
+import { SettingsModule } from './pages/settings/settings.module';
 
 @NgModule({
 	declarations: [
@@ -38,7 +38,7 @@ import { ProtectedComponent } from './pages/protected/protected.component';
 		MatDialogModule,
 		HttpClientModule,
 		ReactiveFormsModule,
-		AdminModule,
+		SettingsModule,
 	],
 	providers: [
 		{
