@@ -31,6 +31,8 @@ export class PermissionsComponent {
 
 		const response = await firstValueFrom(dialogRef.afterClosed());
 
-		this.permissions.push(response);
+		if (response) {
+			this.permissions.push(response);
+		}
 	}
 }

@@ -34,28 +34,27 @@ export class AddPermissionDialogComponent {
 
 		this.buttonLoading = true;
 
-		const response = await firstValueFrom(
-			this.http.post(`${environment.apiUrl}/permissions`, {
-				name: this.permissionFormGroup.value.name.toLowerCase(),
-				description: this.permissionFormGroup.value.description,
-			})
-		);
+		try {
+			const response = await firstValueFrom(
+				this.http.post(`${environment.apiUrl}/permissions`, {
+					name: this.permissionFormGroup.value.name.toLowerCase(),
+					description: this.permissionFormGroup.value.description,
+				})
+			);
 
-		this.buttonLoading = false;
-
-		if (response) {
 			this.toastService.addToast({
 				type: 'success',
 				message: 'Permission added successfully',
 			});
 			this.dialogRef.close(response);
-
-			return;
+		} catch (error) {
+			this.toastService.addToast({
+				type: 'error',
+				message: 'Failed to add permission',
+			});
+		} finally {
+			this.buttonLoading = false;
 		}
-		this.toastService.addToast({
-			type: 'error',
-			message: 'Failed to add permission',
-		});
 	}
 
 	onCancel() {
