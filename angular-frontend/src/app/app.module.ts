@@ -12,6 +12,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { ConfirmationDialogComponent } from './dialog/confirmation-dialog/confirmation-dialog.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { LoginComponent } from './pages/_auth/login/login.component';
 import { LogoutComponent } from './pages/_auth/logout/logout.component';
@@ -30,6 +31,7 @@ import { SettingsModule } from './pages/settings/settings.module';
 		LogoutComponent,
 		NavbarComponent,
 		FooterComponent,
+		ConfirmationDialogComponent,
 	],
 	imports: [
 		BrowserModule,

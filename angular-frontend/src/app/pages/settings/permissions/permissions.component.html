@@ -15,8 +15,19 @@
 		<tr *ngFor="let permission of permissions" class="hover">
 			<td>{{ permission.name }}</td>
 			<td>{{ permission.description }}</td>
-			<td>
-				<button class="btn btn-outline btn-sm">Edit</button>
+			<td class="flex gap-2">
+				<button
+					(click)="onUpdatePermission(permission)"
+					class="btn btn-outline btn-sm"
+				>
+					Edit
+				</button>
+				<button
+					(click)="onDeletePermission(permission)"
+					class="btn btn-outline btn-error btn-sm"
+				>
+					Delete
+				</button>
 			</td>
 		</tr>
 	</tbody>

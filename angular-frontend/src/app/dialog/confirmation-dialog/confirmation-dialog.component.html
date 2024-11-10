@@ -1,0 +1,14 @@
+<h2 mat-dialog-title>{{ title }}</h2>
+<mat-dialog-content>
+	<p>{{ description }}</p>
+</mat-dialog-content>
+<div mat-dialog-actions class="flex gap-2 mt-8">
+	<button
+		(click)="onConfirm()"
+		class="ms-auto btn btn-sm btn-primary"
+		[ngClass]="{ 'btn-error': isDanger }"
+	>
+		Ok
+	</button>
+	<button (click)="onCancel()" class="btn btn-sm btn-outline">Cancel</button>
+</div>

@@ -8,24 +8,26 @@ import { ToastService } from 'src/app/services/toast.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
-	selector: 'app-add-permission-dialog',
-	templateUrl: './add-permission-dialog.component.html',
-	styleUrl: './add-permission-dialog.component.scss',
+	selector: 'app-update-permission-dialog',
+	templateUrl: './update-permission-dialog.component.html',
+	styleUrl: './update-permission-dialog.component.scss',
 })
-export class AddPermissionDialogComponent {
+export class UpdatePermissionDialogComponent {
 	permissionFormGroup: FormGroup;
 	buttonLoading = false;
 
 	constructor(
 		private http: HttpClient,
 		private toastService: ToastService,
-		public dialogRef: MatDialogRef<AddPermissionDialogComponent>,
+		public dialogRef: MatDialogRef<UpdatePermissionDialogComponent>,
 		@Inject(MAT_DIALOG_DATA) public data: I_Permission
 	) {
 		this.permissionFormGroup = new FormGroup({
 			name: new FormControl('', Validators.required),
 			description: new FormControl('', Validators.required),
 		});
+
+		this.permissionFormGroup.patchValue(data);
 	}
 
 	async onSave() {
@@ -37,7 +39,7 @@ export class AddPermissionDialogComponent {
 
 		try {
 			const response = await firstValueFrom(
-				this.http.post(`${environment.apiUrl}/permissions`, {
+				this.http.put(`${environment.apiUrl}/permissions/${this.data.id}`, {
 					name: this.permissionFormGroup.value.name.toLowerCase(),
 					description: this.permissionFormGroup.value.description,
 				})
@@ -45,14 +47,21 @@ export class AddPermissionDialogComponent {
 
 			this.toastService.addToast({
 				type: 'success',
-				message: 'Permission added successfully',
+				message: 'Permission updated successfully',
 			});
 			this.dialogRef.close(response);
-		} catch (error) {
-			this.toastService.addToast({
-				type: 'error',
-				message: 'Failed to add permission',
-			});
+		} catch (error: any) {
+			if (error.status === 409) {
+				this.toastService.addToast({
+					type: 'error',
+					message: 'Permission with that name already exists',
+				});
+			} else {
+				this.toastService.addToast({
+					type: 'error',
+					message: 'Failed to update permission',
+				});
+			}
 		} finally {
 			this.buttonLoading = false;
 		}

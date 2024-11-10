@@ -5,6 +5,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { AddPermissionDialogComponent } from './permissions/add-permission-dialog/add-permission-dialog.component';
 import { PermissionsComponent } from './permissions/permissions.component';
+import { UpdatePermissionDialogComponent } from './permissions/update-permission-dialog/update-permission-dialog.component';
 import { ProfileComponent } from './profile/profile.component';
 import { RolesComponent } from './roles/roles.component';
 import { SettingsRoutingModule } from './settings-routing.module';
@@ -19,6 +20,7 @@ import { UsersComponent } from './users/users.component';
 		PermissionsComponent,
 		ProfileComponent,
 		AddPermissionDialogComponent,
+		UpdatePermissionDialogComponent,
 	],
 	imports: [
 		CommonModule,
