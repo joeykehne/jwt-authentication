@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { AddPermissionDialogComponent } from './permissions/add-permission-dialog/add-permission-dialog.component';
@@ -19,6 +20,12 @@ import { UsersComponent } from './users/users.component';
 		ProfileComponent,
 		AddPermissionDialogComponent,
 	],
-	imports: [CommonModule, RouterModule, MatDialogModule, SettingsRoutingModule],
+	imports: [
+		CommonModule,
+		RouterModule,
+		MatDialogModule,
+		SettingsRoutingModule,
+		ReactiveFormsModule,
+	],
 })
 export class SettingsModule {}

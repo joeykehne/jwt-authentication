@@ -12,7 +12,6 @@ import {
 	tap,
 } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { I_User } from '../interfaces';
 
 @Injectable({
 	providedIn: 'root',
@@ -71,7 +70,7 @@ export class AuthService {
 		this.accessToken$.next(response.accessToken);
 	}
 
-	async register(user: I_User) {
+	async register(user: { name: string; email: string; password: string }) {
 		const response = await firstValueFrom(
 			this.http.post<{ accessToken: string }>(
 				`${environment.apiUrl}/auth/register`,

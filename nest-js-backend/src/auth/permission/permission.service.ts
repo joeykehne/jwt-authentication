@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Permission } from './permission.entity';
 import { Repository } from 'typeorm';
+import { Permission } from './permission.entity';
 
 @Injectable()
 export class PermissionService {
@@ -11,8 +11,8 @@ export class PermissionService {
   ) {}
 
   // Create a new permission
-  async createPermission(name: string): Promise<Permission> {
-    const permission = this.permissionRepository.create({ name });
+  async createPermission(body: Permission): Promise<Permission> {
+    const permission = this.permissionRepository.create(body);
     return this.permissionRepository.save(permission);
   }
 

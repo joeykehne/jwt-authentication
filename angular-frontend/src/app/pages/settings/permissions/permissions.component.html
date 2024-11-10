@@ -7,12 +7,14 @@
 	<thead>
 		<tr>
 			<th>Name</th>
+			<th>Description</th>
 		</tr>
 		<tr></tr>
 	</thead>
 	<tbody>
 		<tr *ngFor="let permission of permissions" class="hover">
 			<td>{{ permission.name }}</td>
+			<td>{{ permission.description }}</td>
 			<td>
 				<button class="btn btn-outline btn-sm">Edit</button>
 			</td>

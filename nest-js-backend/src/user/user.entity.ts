@@ -12,7 +12,7 @@ import {
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
-  _id: string;
+  id: string;
 
   @Column()
   name: string;
@@ -26,7 +26,7 @@ export class User {
   @ManyToMany(() => Role, (role) => role.users, { cascade: true })
   @JoinTable({
     name: 'user_roles',
-    joinColumn: { name: 'userId', referencedColumnName: '_id' },
+    joinColumn: { name: 'userId', referencedColumnName: 'id' },
     inverseJoinColumn: { name: 'roleId', referencedColumnName: 'id' },
   })
   roles: Role[];

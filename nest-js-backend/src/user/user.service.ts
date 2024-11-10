@@ -24,7 +24,7 @@ export class UserService {
   // Assign roles to a user
   async assignRoles(userId: string, roleIds: string[]): Promise<User> {
     const user = await this.userRepository.findOne({
-      where: { _id: userId },
+      where: { id: userId },
       relations: ['roles'],
     });
     if (!user) {

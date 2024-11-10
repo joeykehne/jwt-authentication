@@ -17,12 +17,12 @@
 			<td>{{ user.email }}</td>
 			<td>{{ user.isPaying ? "Yes" : "No" }}</td>
 			<td>
-				<ul *ngIf="user.roles.length > 0; else emptyCell">
+				<ul *ngIf="user.roles?.length; else emptyCell">
 					<li *ngFor="let role of user.roles">{{ role.name }}</li>
 				</ul>
 			</td>
 			<td>
-				<ul *ngIf="user.roles.length > 0; else emptyCell">
+				<ul *ngIf="user.roles?.length; else emptyCell">
 					<li *ngFor="let role of user.roles">
 						<ul *ngIf="role.permissions.length > 0; else emptyCell">
 							<li *ngFor="let permission of role.permissions">

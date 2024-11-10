@@ -4,7 +4,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class RefreshToken {
   @PrimaryGeneratedColumn('uuid')
-  _id: string;
+  id: string;
 
   @Column()
   refreshToken: string;

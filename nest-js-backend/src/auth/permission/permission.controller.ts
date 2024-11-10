@@ -1,4 +1,5 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Permission } from './permission.entity';
 import { PermissionService } from './permission.service';
 
 @Controller('permissions')
@@ -7,8 +8,8 @@ export class PermissionController {
 
   // Create a new permission
   @Post()
-  async createPermission(@Body('name') name: string) {
-    const permission = await this.permissionService.createPermission(name);
+  async createPermission(@Body() body: Permission) {
+    const permission = await this.permissionService.createPermission(body);
     return permission;
   }
 

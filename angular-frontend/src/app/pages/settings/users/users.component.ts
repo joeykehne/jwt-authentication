@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
+import { I_User } from 'src/app/interfaces';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -9,13 +10,13 @@ import { environment } from 'src/environments/environment';
 	styleUrl: './users.component.scss',
 })
 export class UsersComponent implements OnInit {
-	users: any[] = [];
+	users: I_User[] = [];
 
 	constructor(private http: HttpClient) {}
 
 	async ngOnInit() {
 		this.users = await firstValueFrom(
-			this.http.get<any[]>(`${environment.apiUrl}/users`)
+			this.http.get<I_User[]>(`${environment.apiUrl}/users`)
 		);
 	}
 }

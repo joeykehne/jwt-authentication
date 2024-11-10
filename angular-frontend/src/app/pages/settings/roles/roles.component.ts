@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
+import { I_Role } from 'src/app/interfaces';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -9,13 +10,13 @@ import { environment } from 'src/environments/environment';
 	styleUrl: './roles.component.scss',
 })
 export class RolesComponent {
-	roles: any[] = [];
+	roles: I_Role[] = [];
 
 	constructor(private http: HttpClient) {}
 
 	async ngOnInit() {
 		this.roles = await firstValueFrom(
-			this.http.get<any[]>(`${environment.apiUrl}/roles`)
+			this.http.get<I_Role[]>(`${environment.apiUrl}/roles`)
 		);
 	}
 }
