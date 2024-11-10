@@ -13,6 +13,7 @@ import { environment } from 'src/environments/environment';
 })
 export class AddPermissionDialogComponent {
 	permissionFormGroup: FormGroup;
+	buttonLoading = false;
 
 	constructor(
 		private http: HttpClient,
@@ -31,12 +32,16 @@ export class AddPermissionDialogComponent {
 			return;
 		}
 
+		this.buttonLoading = true;
+
 		const response = await firstValueFrom(
 			this.http.post(`${environment.apiUrl}/permissions`, {
 				name: this.permissionFormGroup.value.name.toLowerCase(),
 				description: this.permissionFormGroup.value.description,
 			})
 		);
+
+		this.buttonLoading = false;
 
 		if (response) {
 			this.toastService.addToast({

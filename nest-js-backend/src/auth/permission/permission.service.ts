@@ -13,6 +13,7 @@ export class PermissionService {
   // Create a new permission
   async createPermission(body: Permission): Promise<Permission> {
     const permission = this.permissionRepository.create(body);
+
     return this.permissionRepository.save(permission);
   }
 

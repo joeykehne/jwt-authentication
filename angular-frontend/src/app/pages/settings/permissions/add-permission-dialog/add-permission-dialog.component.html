@@ -24,10 +24,11 @@
 </div>
 <div mat-dialog-actions class="flex gap-2 mt-8">
 	<button
-		[disabled]="permissionFormGroup.invalid"
+		[disabled]="permissionFormGroup.invalid || buttonLoading"
 		(click)="onSave()"
 		class="ms-auto btn btn-sm btn-primary"
 	>
+		<div *ngIf="buttonLoading" class="loading loading-spinner"></div>
 		Save
 	</button>
 	<button (click)="onCancel()" class="btn btn-sm btn-outline">Cancel</button>
