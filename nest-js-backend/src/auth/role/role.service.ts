@@ -1,3 +1,4 @@
+// src/auth/role/role.service.ts
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -15,20 +16,18 @@ export class RoleService {
   ) {}
 
   // Create a new role
-  async createRole(name: string): Promise<Role> {
-    const role = this.roleRepository.create({ name });
+  async createRole(name: string, permissionIds: string[]): Promise<Role> {
+    const permissions =
+      await this.permissionRepository.findByIds(permissionIds);
+    const role = this.roleRepository.create({ name, permissions });
     return this.roleRepository.save(role);
   }
 
-  // Get all roles
-  async getAllRoles(): Promise<Role[]> {
-    return this.roleRepository.find({ relations: ['permissions'] });
-  }
-
-  // Assign permissions to a role
-  async assignPermissions(
+  // Update an existing role
+  async updateRole(
     roleId: string,
-    permissionIds: string[],
+    name?: string,
+    permissionIds?: string[],
   ): Promise<Role> {
     const role = await this.roleRepository.findOne({
       where: { id: roleId },
@@ -38,11 +37,28 @@ export class RoleService {
       throw new NotFoundException('Role not found');
     }
 
-    const permissions =
-      await this.permissionRepository.findByIds(permissionIds);
-    role.permissions = permissions;
+    if (name !== undefined) {
+      role.name = name;
+    }
+    if (permissionIds !== undefined) {
+      const permissions =
+        await this.permissionRepository.findByIds(permissionIds);
+      role.permissions = permissions;
+    }
+
     return this.roleRepository.save(role);
   }
 
-  // Other CRUD operations as needed
+  // Delete a role
+  async deleteRole(roleId: string): Promise<void> {
+    const result = await this.roleRepository.delete({ id: roleId });
+    if (result.affected === 0) {
+      throw new NotFoundException('Role not found');
+    }
+  }
+
+  // Get all roles
+  async getAllRoles(): Promise<Role[]> {
+    return this.roleRepository.find({ relations: ['permissions'] });
+  }
 }

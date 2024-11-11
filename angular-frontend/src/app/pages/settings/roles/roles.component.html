@@ -1,4 +1,7 @@
-<h1 class="text-3xl mb-4">Roles</h1>
+<div class="flex justify-between items-center mb-4">
+	<h1 class="text-3xl">Roles</h1>
+	<button class="btn btn-primary" (click)="onAddRole()">Add</button>
+</div>
 
 <table class="table w-full">
 	<thead>
@@ -10,7 +13,7 @@
 	</thead>
 	<tbody>
 		<tr *ngFor="let role of roles" class="hover">
-			<td>{{ role.name }}</td>
+			<td class="align-top">{{ role.name }}</td>
 			<td>
 				<ul *ngIf="role.permissions.length > 0; else emptyCell">
 					<li *ngFor="let permission of role.permissions">
@@ -18,9 +21,20 @@
 					</li>
 				</ul>
 			</td>
-			<td>
-				<button class="btn btn-outline btn-sm">Edit</button>
+			<td class="flex gap-2">
+				<button (click)="onUpdateRole(role)" class="btn btn-outline btn-sm">
+					Edit
+				</button>
+				<button
+					(click)="onDeleteRole(role)"
+					class="btn btn-outline btn-error btn-sm"
+				>
+					Delete
+				</button>
 			</td>
+		</tr>
+		<tr *ngIf="!roles.length">
+			<td>No Roles</td>
 		</tr>
 	</tbody>
 </table>

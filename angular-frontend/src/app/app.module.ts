@@ -1,6 +1,6 @@
 import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
 	MAT_DIALOG_DEFAULT_OPTIONS,
 	MatDialogModule,
@@ -41,6 +41,7 @@ import { SettingsModule } from './pages/settings/settings.module';
 		HttpClientModule,
 		ReactiveFormsModule,
 		SettingsModule,
+		FormsModule,
 	],
 	providers: [
 		{

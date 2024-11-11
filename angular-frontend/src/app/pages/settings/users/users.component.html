@@ -22,18 +22,9 @@
 				</ul>
 			</td>
 			<td>
-				<ul *ngIf="user.roles?.length; else emptyCell">
-					<li *ngFor="let role of user.roles">
-						<ul *ngIf="role.permissions.length > 0; else emptyCell">
-							<li *ngFor="let permission of role.permissions">
-								{{ permission.name }}
-							</li>
-						</ul>
-					</li>
-				</ul>
-			</td>
-			<td>
-				<button class="btn btn-outline btn-sm">Edit</button>
+				<button (click)="onUpdateUser(user)" class="btn btn-outline btn-sm">
+					Edit
+				</button>
 			</td>
 		</tr>
 	</tbody>

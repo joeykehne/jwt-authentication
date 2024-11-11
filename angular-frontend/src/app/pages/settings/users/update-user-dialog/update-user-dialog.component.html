@@ -1,0 +1,22 @@
+<h3 mat-dialog-title class="font-bold text-lg">Edit {{ data.name }}</h3>
+<div mat-dialog-content>
+	<form [formGroup]="userFormGroup">
+		<app-role-selector
+			[roles]="roles"
+			[(selectedRoleIds)]="selectedRoleIds"
+			(selectedRoleIdsChange)="onRolesChanged($event)"
+		></app-role-selector>
+	</form>
+</div>
+
+<div mat-dialog-actions class="flex gap-2 mt-8">
+	<button
+		[disabled]="userFormGroup.invalid || buttonLoading"
+		(click)="onSave()"
+		class="ms-auto btn btn-sm btn-primary"
+	>
+		<div *ngIf="buttonLoading" class="loading loading-spinner"></div>
+		Save
+	</button>
+	<button (click)="onCancel()" class="btn btn-sm btn-outline">Cancel</button>
+</div>

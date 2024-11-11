@@ -1,0 +1,25 @@
+<div class="form-control">
+	<label class="label">Permissions</label>
+	<input
+		type="text"
+		[(ngModel)]="searchTerm"
+		(input)="filterPermissions()"
+		class="input input-sm input-bordered"
+		placeholder="Search permissions..."
+	/>
+	<div class="grid grid-cols-2 gap-4 max-h-64 overflow-y-auto mt-2">
+		<label
+			*ngFor="let permission of filteredPermissions"
+			class="cursor-pointer flex items-center"
+		>
+			<input
+				type="checkbox"
+				[value]="permission.id"
+				(change)="togglePermission(permission)"
+				[checked]="isSelected(permission)"
+				class="checkbox checkbox-sm"
+			/>
+			<span class="ml-2">{{ permission.name }}</span>
+		</label>
+	</div>
+</div>

@@ -25,7 +25,7 @@ export class UserService {
   async assignRoles(userId: string, roleIds: string[]): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
-      relations: ['roles'],
+      relations: ['roles', 'roles.permissions'],
     });
     if (!user) {
       throw new NotFoundException('User not found');
@@ -33,6 +33,7 @@ export class UserService {
 
     const roles = await this.roleRepository.findByIds(roleIds);
     user.roles = roles;
+
     return this.userRepository.save(user);
   }
 }
