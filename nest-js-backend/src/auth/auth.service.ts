@@ -222,8 +222,7 @@ export class AuthService {
         result[permission] = true;
         continue;
       }
-      result[permission] = true;
-      // result[permission] = userPermissions.includes(permission);
+      result[permission] = userPermissions.includes(permission);
     }
 
     return result;
