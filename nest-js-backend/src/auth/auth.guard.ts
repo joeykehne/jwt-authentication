@@ -16,10 +16,20 @@ export class AuthGuard implements CanActivate {
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const requiredPermissions = this.reflector.get<string[]>(
+    const requiredPermissionsHandler = this.reflector.get<string[]>(
       'permissions',
       context.getHandler(),
     );
+
+    const requiredPermissionsClass = this.reflector.get<string[]>(
+      'permissions',
+      context.getClass(),
+    );
+
+    const requiredPermissions = [
+      ...(requiredPermissionsHandler || []),
+      ...(requiredPermissionsClass || []),
+    ];
 
     const request = context.switchToHttp().getRequest();
     const token = request.headers['authorization'];
@@ -33,16 +43,13 @@ export class AuthGuard implements CanActivate {
     const user = await this.authService.validateToken(tokenValue);
     request.user = user;
 
-    if (
-      !requiredPermissions ||
-      user.roles.some((role) => role.name === 'admin')
-    ) {
-      return true;
-    }
-
     const userPermissions = user.roles
       .flatMap((role) => role.permissions)
       .map((permission) => permission.name);
+
+    if (userPermissions.includes('admin')) {
+      return true;
+    }
 
     const hasPermission = requiredPermissions.every((permission) =>
       userPermissions.includes(permission),

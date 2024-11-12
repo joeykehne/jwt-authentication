@@ -1,6 +1,10 @@
-import { Body, Controller, Get, Param, Patch } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import { AuthGuard } from 'src/auth/auth.guard';
+import { SetPermissions } from 'src/auth/permission/permissions.decorator';
 import { UserService } from './user.service';
 
+@SetPermissions('iam')
+@UseGuards(AuthGuard)
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}

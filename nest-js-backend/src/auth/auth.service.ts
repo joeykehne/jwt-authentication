@@ -110,6 +110,10 @@ export class AuthService {
     await this.refreshTokenRepository.delete({ refreshToken });
   }
 
+  async logoutUserEverywhere(userId: string): Promise<void> {
+    await this.refreshTokenRepository.delete({ user: { id: userId } });
+  }
+
   async validateToken(token: string) {
     try {
       const payload = this.jwtService.verify(token, {

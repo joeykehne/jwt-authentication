@@ -4,15 +4,20 @@ import {
   Controller,
   ForbiddenException,
   Get,
+  Param,
+  Patch,
   Post,
   Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Request, Response } from 'express';
 import { refreshTokenExpiresIn } from 'src/constants';
+import { AuthGuard } from './auth.guard';
 import { AuthService } from './auth.service';
+import { SetPermissions } from './permission/permissions.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -118,12 +123,16 @@ export class AuthController {
   async canAccess(
     @Req() req: Request,
     @Body() body: { permissions: string[] },
-  ) {
+  ): Promise<{ [key: string]: boolean }> {
+    if (!body.permissions) return {};
+
     return this.authService.canAccess(req, body.permissions);
   }
 
-  @Post('logOutUser')
-  async logOutUser(@Body() body: { email: string }) {
-    return this.authService.logout(body.email);
+  @SetPermissions('iam')
+  @UseGuards(AuthGuard)
+  @Patch('logoutUserEverywhere/:id')
+  async logOutUser(@Param('id') userId: string) {
+    return this.authService.logoutUserEverywhere(userId);
   }
 }

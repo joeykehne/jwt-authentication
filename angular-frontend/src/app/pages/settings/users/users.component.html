@@ -7,7 +7,6 @@
 			<th>Email</th>
 			<th>Paying Customer</th>
 			<th>Roles</th>
-			<th>Permissions</th>
 			<th></th>
 		</tr>
 	</thead>
@@ -21,9 +20,12 @@
 					<li *ngFor="let role of user.roles">{{ role.name }}</li>
 				</ul>
 			</td>
-			<td>
+			<td class="flex gap-2">
 				<button (click)="onUpdateUser(user)" class="btn btn-outline btn-sm">
 					Edit
+				</button>
+				<button (click)="onLogoutUser(user)" class="btn btn-outline btn-sm">
+					Logout
 				</button>
 			</td>
 		</tr>

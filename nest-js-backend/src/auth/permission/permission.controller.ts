@@ -6,10 +6,15 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '../auth.guard';
 import { Permission } from './permission.entity';
 import { PermissionService } from './permission.service';
+import { SetPermissions } from './permissions.decorator';
 
+@SetPermissions('iam')
+@UseGuards(AuthGuard)
 @Controller('permissions')
 export class PermissionController {
   constructor(private readonly permissionService: PermissionService) {}

@@ -7,9 +7,14 @@ import {
   Param,
   Post,
   Put,
+  UseGuards,
 } from '@nestjs/common';
+import { AuthGuard } from '../auth.guard';
+import { SetPermissions } from '../permission/permissions.decorator';
 import { RoleService } from './role.service';
 
+@SetPermissions('iam')
+@UseGuards(AuthGuard)
 @Controller('roles')
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
