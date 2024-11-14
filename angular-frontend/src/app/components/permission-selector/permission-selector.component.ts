@@ -9,10 +9,11 @@ import {
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { I_Permission } from 'src/app/interfaces';
+import { LoadingComponent } from '../loading/loading.component';
 
 @Component({
 	standalone: true,
-	imports: [CommonModule, ReactiveFormsModule, FormsModule],
+	imports: [CommonModule, ReactiveFormsModule, FormsModule, LoadingComponent],
 	selector: 'app-permission-selector',
 	templateUrl: './permission-selector.component.html',
 	styleUrls: ['./permission-selector.component.scss'],

@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
+import { LoadingComponent } from 'src/app/components/loading/loading.component';
 import { PermissionSelectorComponent } from 'src/app/components/permission-selector/permission-selector.component';
 import { RoleSelectorComponent } from 'src/app/components/role-selector/role-selector.component';
 import { AddPermissionDialogComponent } from './permissions/add-permission-dialog/add-permission-dialog.component';
@@ -38,6 +39,7 @@ import { UsersComponent } from './users/users.component';
 		ReactiveFormsModule,
 		PermissionSelectorComponent,
 		RoleSelectorComponent,
+		LoadingComponent,
 	],
 })
 export class SettingsModule {}

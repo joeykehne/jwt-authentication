@@ -1,4 +1,4 @@
-<div class="form-control">
+<div *ngIf="roles.length; else loading" class="form-control">
 	<label class="label">Roles</label>
 	<input
 		type="text"
@@ -23,3 +23,7 @@
 		</label>
 	</div>
 </div>
+
+<ng-template #loading>
+	<app-loading></app-loading>
+</ng-template>

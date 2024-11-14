@@ -1,9 +1,15 @@
 <div class="flex justify-between items-center mb-4">
 	<h1 class="text-3xl">Roles</h1>
-	<button class="btn btn-primary" (click)="onAddRole()">Add</button>
+	<button
+		*ngIf="roles.length"
+		class="btn btn-primary btn-sm"
+		(click)="onAddRole()"
+	>
+		Add
+	</button>
 </div>
 
-<table class="table w-full">
+<table *ngIf="roles.length; else loading" class="table w-full">
 	<thead>
 		<tr>
 			<th>Name</th>
@@ -40,3 +46,7 @@
 </table>
 
 <ng-template #emptyCell>-</ng-template>
+
+<ng-template #loading>
+	<app-loading></app-loading>
+</ng-template>

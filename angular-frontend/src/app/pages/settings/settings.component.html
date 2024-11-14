@@ -16,17 +16,23 @@
 			aria-label="close sidebar"
 			class="drawer-overlay"
 		></label>
-		<ul
-			class="menu md:rounded-xl bg-base-200 text-base-content min-h-full w-80 p-4"
+		<div
+			class="md:rounded-xl bg-base-200 text-base-content min-h-full w-80 p-4"
 		>
-			<div *ngFor="let navSection of navSections" class="mb-2">
-				<li class="menu-title">
-					<span>{{ navSection.name }}</span>
-				</li>
-				<li *ngFor="let url of navSection.urls">
-					<a [routerLink]="url.routerLink">{{ url.name }}</a>
-				</li>
-			</div>
-		</ul>
+			<ul *ngIf="!navSectionsLoading; else loading" class="menu">
+				<div *ngFor="let navSection of navSections" class="mb-2">
+					<li class="menu-title">
+						<span>{{ navSection.name }}</span>
+					</li>
+					<li *ngFor="let url of navSection.urls">
+						<a [routerLink]="url.routerLink">{{ url.name }}</a>
+					</li>
+				</div>
+			</ul>
+		</div>
 	</div>
 </div>
+
+<ng-template #loading>
+	<app-loading></app-loading>
+</ng-template>

@@ -12,6 +12,8 @@ import { AuthService } from 'src/app/services/auth.service';
 export class LoginComponent {
 	loginForm: FormGroup;
 
+	attemptingLogin = false;
+
 	tooManyRetries = false;
 	wrongPassword = false;
 	userNotFound = false;
@@ -38,6 +40,8 @@ export class LoginComponent {
 	async onSubmit() {
 		if (this.loginForm.valid) {
 			try {
+				this.attemptingLogin = true;
+
 				await this.authService.login({
 					email: this.loginForm.value.email,
 					password: this.loginForm.value.password,
@@ -62,6 +66,8 @@ export class LoginComponent {
 				} else {
 					this.somethingElseWrong = true;
 				}
+			} finally {
+				this.attemptingLogin = false;
 			}
 		}
 	}

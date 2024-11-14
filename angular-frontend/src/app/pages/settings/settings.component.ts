@@ -28,6 +28,7 @@ export class SettingsComponent implements OnInit {
 	];
 
 	navSections: I_NavSection[] = [];
+	navSectionsLoading = true;
 
 	constructor(private authService: AuthService) {}
 
@@ -51,5 +52,6 @@ export class SettingsComponent implements OnInit {
 
 			return false;
 		});
+		this.navSectionsLoading = false;
 	}
 }

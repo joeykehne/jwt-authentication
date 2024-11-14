@@ -9,10 +9,11 @@ import {
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { I_Role } from 'src/app/interfaces';
+import { LoadingComponent } from '../loading/loading.component';
 
 @Component({
 	standalone: true,
-	imports: [CommonModule, ReactiveFormsModule, FormsModule],
+	imports: [CommonModule, ReactiveFormsModule, FormsModule, LoadingComponent],
 	selector: 'app-role-selector',
 	templateUrl: './role-selector.component.html',
 	styleUrls: ['./role-selector.component.scss'],

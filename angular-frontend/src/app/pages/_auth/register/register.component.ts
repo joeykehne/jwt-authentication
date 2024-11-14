@@ -1,4 +1,4 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -17,9 +17,10 @@ export class RegisterComponent {
 	emailAlreadyExists = false;
 	somethingElseWrong = false;
 
+	attemptingLogin = false;
+
 	constructor(
 		private fb: FormBuilder,
-		private http: HttpClient,
 		private authService: AuthService,
 		private router: Router
 	) {
@@ -39,20 +40,12 @@ export class RegisterComponent {
 			},
 			{ validators: ConfirmPasswordValidator.mismatch }
 		);
-
-		if (false) {
-			this.registerForm.patchValue({
-				email: 'email@email.com',
-				password: 'Changeme123',
-				confirmPassword: 'Changeme123',
-				name: 'User',
-			});
-		}
 	}
 
 	async onSubmit() {
 		if (this.registerForm.valid) {
 			try {
+				this.attemptingLogin = true;
 				await this.authService.register({
 					name: this.registerForm.value.name,
 					email: this.registerForm.value.email,
@@ -67,6 +60,8 @@ export class RegisterComponent {
 				} else {
 					this.somethingElseWrong = true;
 				}
+			} finally {
+				this.attemptingLogin = false;
 			}
 		}
 	}

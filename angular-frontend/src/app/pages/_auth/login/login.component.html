@@ -3,95 +3,101 @@
 		<div class="flex justify-center">
 			<div class="w-full">
 				<div class="card bg-neutral shadow-md px-8 pt-6 pb-8 mb-4">
-					<h2 class="text-center text-2xl mb-6">Login</h2>
-					<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-						<div class="form-control">
-							<label for="email" class="label">
-								<span class="label-text">Email</span>
-							</label>
-							<input
-								type="email"
-								class="input md:input-md input-sm input-bordered w-full"
-								id="email"
-								formControlName="email"
-								placeholder="Enter your email"
-							/>
-							<label class="label">
-								<span
-									class="label-text-alt text-red-500"
-									*ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors?.['required']"
-									>Email is required.</span
+					<ng-container *ngIf="!attemptingLogin; else loading">
+						<h2 class="text-center text-2xl mb-6">Login</h2>
+						<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+							<div class="form-control">
+								<label for="email" class="label">
+									<span class="label-text">Email</span>
+								</label>
+								<input
+									type="email"
+									class="input md:input-md input-sm input-bordered w-full"
+									id="email"
+									formControlName="email"
+									placeholder="Enter your email"
+								/>
+								<label class="label">
+									<span
+										class="label-text-alt text-red-500"
+										*ngIf="loginForm.get('email')?.touched && loginForm.get('email')?.errors?.['required']"
+										>Email is required.</span
+									>
+									<span
+										class="label-text-alt text-red-500"
+										*ngIf="loginForm.get('email')?.errors?.['email']"
+										>Please enter a valid email.</span
+									>
+								</label>
+							</div>
+							<div class="form-control">
+								<label for="password" class="label">
+									<span class="label-text">Password</span>
+									<a
+										class="label-text text-primary hover:underline"
+										routerLink="/request-reset-password"
+										tabindex="-1"
+										>Forgot password?</a
+									>
+								</label>
+								<input
+									type="password"
+									class="input md:input-md input-sm input-bordered w-full"
+									id="password"
+									formControlName="password"
+									placeholder="Enter your password"
+								/>
+								<label class="label">
+									<span
+										class="label-text-alt text-red-500"
+										*ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.errors?.['required']"
+										>Password is required.</span
+									>
+								</label>
+							</div>
+							<label *ngIf="tooManyRetries" class="label">
+								<span class="label-text-alt text-red-500"
+									>Too many tries. Please wait 1 minute until you can try
+									again.</span
 								>
-								<span
-									class="label-text-alt text-red-500"
-									*ngIf="loginForm.get('email')?.errors?.['email']"
-									>Please enter a valid email.</span
+							</label>
+							<label *ngIf="wrongPassword" class="label">
+								<span class="label-text-alt text-red-500"
+									>The password provided was not correct.</span
 								>
 							</label>
-						</div>
-						<div class="form-control">
-							<label for="password" class="label">
-								<span class="label-text">Password</span>
-								<a
-									class="label-text text-primary hover:underline"
-									routerLink="/request-reset-password"
-									tabindex="-1"
-									>Forgot password?</a
+							<label *ngIf="userNotFound" class="label">
+								<span class="label-text-alt text-red-500"
+									>The email provided is not associated with an account. You can
+									create a new account
+									<u
+										><b><a href="register">here</a></b></u
+									></span
 								>
 							</label>
-							<input
-								type="password"
-								class="input md:input-md input-sm input-bordered w-full"
-								id="password"
-								formControlName="password"
-								placeholder="Enter your password"
-							/>
-							<label class="label">
-								<span
-									class="label-text-alt text-red-500"
-									*ngIf="loginForm.get('password')?.touched && loginForm.get('password')?.errors?.['required']"
-									>Password is required.</span
+							<label *ngIf="somethingElseWrong" class="label">
+								<span class="label-text-alt text-red-500"
+									>Something went wrong. Please try again.</span
 								>
 							</label>
-						</div>
-						<label *ngIf="tooManyRetries" class="label">
-							<span class="label-text-alt text-red-500"
-								>Too many tries. Please wait 1 minute until you can try
-								again.</span
-							>
-						</label>
-						<label *ngIf="wrongPassword" class="label">
-							<span class="label-text-alt text-red-500"
-								>The password provided was not correct.</span
-							>
-						</label>
-						<label *ngIf="userNotFound" class="label">
-							<span class="label-text-alt text-red-500"
-								>The email provided is not associated with an account. You can
-								create a new account
-								<u
-									><b><a href="register">here</a></b></u
-								></span
-							>
-						</label>
-						<label *ngIf="somethingElseWrong" class="label">
-							<span class="label-text-alt text-red-500"
-								>Something went wrong. Please try again.</span
-							>
-						</label>
-						<div class="form-control mt-6 gap-4">
-							<button type="submit" class="btn btn-primary">Login</button>
+							<div class="form-control mt-6 gap-4">
+								<button type="submit" class="btn btn-primary">Login</button>
 
-							<span>
-								New here?
-								<a class="hover:underline" routerLink="/register"
-									>Register now.</a
-								>
-							</span>
-						</div>
-					</form>
+								<span>
+									New here?
+									<a class="hover:underline" routerLink="/register"
+										>Register now.</a
+									>
+								</span>
+							</div>
+						</form>
+					</ng-container>
 				</div>
 			</div>
 		</div>
 	</div>
 </section>
+
+<ng-template #loading>
+	<app-loading></app-loading>
+</ng-template>
