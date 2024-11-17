@@ -50,6 +50,9 @@ export class RoleSelectorComponent implements OnInit, OnChanges {
 		this.filteredRoles = this.roles.filter((role) =>
 			role.name.toLowerCase().includes(search)
 		);
+
+		// only show first 6 results
+		this.filteredRoles = this.filteredRoles.slice(0, 6);
 	}
 
 	isSelected(role: I_Role): boolean {

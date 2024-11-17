@@ -1,6 +1,7 @@
 <div *ngIf="roles.length; else loading" class="form-control">
 	<label class="label">Roles</label>
 	<input
+		*ngIf="roles.length > 6"
 		type="text"
 		[(ngModel)]="searchTerm"
 		(input)="filterRoles()"

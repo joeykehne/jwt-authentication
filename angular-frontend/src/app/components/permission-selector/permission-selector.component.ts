@@ -49,6 +49,9 @@ export class PermissionSelectorComponent implements OnInit, OnChanges {
 		this.filteredPermissions = this.permissions.filter((permission) =>
 			permission.name.toLowerCase().includes(search)
 		);
+
+		// only show first 6 results
+		this.filteredPermissions = this.filteredPermissions.slice(0, 6);
 	}
 
 	isSelected(permission: I_Permission): boolean {

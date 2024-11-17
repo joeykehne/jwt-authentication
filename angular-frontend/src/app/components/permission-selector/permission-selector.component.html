@@ -1,6 +1,7 @@
 <div *ngIf="permissions.length; else loading" class="form-control">
 	<label class="label">Permissions</label>
 	<input
+		*ngIf="permissions.length > 6"
 		type="text"
 		[(ngModel)]="searchTerm"
 		(input)="filterPermissions()"

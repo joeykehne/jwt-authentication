@@ -1,38 +1,12 @@
 <h1 class="text-3xl mb-4">Profile</h1>
 
 <div class="flex flex-col gap-4">
-	<div class="relative group">
-		<pre
-			class="bg-base-200 p-4 rounded-xl w-full whitespace-pre-wrap break-all group-hover:pe-14"
-			#tokenPre
-			>{{ authService.getAccessToken() | async | json }}</pre
-		>
-		<button
-			class="hidden group-hover:block absolute top-2 right-2 btn btn-sm btn-ghost"
-			(click)="copyToken()"
-			aria-label="Copy Token"
-			title="Copy Token"
-		>
-			<!-- Copy Icon (Using SVG) -->
-			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				class="h-5 w-5"
-				viewBox="0 0 24 24"
-				fill="none"
-				stroke="currentColor"
-				stroke-width="2"
-				stroke-linecap="round"
-				stroke-linejoin="round"
-			>
-				<rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
-				<path
-					d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"
-				></path>
-			</svg>
-		</button>
-	</div>
+	<app-copy-code-box
+		text="{{ authService.getAccessToken() | async }}"
+	></app-copy-code-box>
 
-	<pre class="bg-base-200 p-4 rounded-xl w-fit whitespace-pre-wrap break-all">{{
-		authService.user$ | async | json
-	}}</pre>
+	<app-copy-code-box
+		text="{{ authService.user$ | async | json }}"
+	></app-copy-code-box>
+	<app-copy-code-box text="Das ist ein Test"></app-copy-code-box>
 </div>
