@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { I_FormField } from 'src/app/interfaces';
+import { ToastService } from 'src/app/services/toast.service';
 
 @Component({
 	selector: 'app-dynamic-form',
@@ -12,11 +13,11 @@ import { I_FormField } from 'src/app/interfaces';
 })
 export class DynamicFormComponent {
 	@Input() fields: I_FormField[] = [];
-	@Output() submit = new EventEmitter();
+	@Output() formSubmit = new EventEmitter();
 
 	form!: FormGroup;
 
-	constructor(private fb: FormBuilder) {}
+	constructor(private fb: FormBuilder, private toastService: ToastService) {}
 
 	ngOnInit(): void {
 		this.form = this.fb.group({});
@@ -25,7 +26,16 @@ export class DynamicFormComponent {
 		});
 	}
 
-	onSubmit() {
-		this.submit.emit(this.form.value);
+	onSubmit(event: Event) {
+		if (this.form.invalid) {
+			this.toastService.addToast({
+				message: 'Please fill out all required fields',
+				type: 'error',
+			});
+			return;
+		}
+
+		event.preventDefault();
+		this.formSubmit.emit(this.form.value);
 	}
 }

@@ -35,6 +35,7 @@ export interface I_FormField {
 	type: 'text' | 'number' | 'select' | 'email' | 'password' | 'textarea';
 	label: string;
 	name: string;
+	required: boolean;
 	value?: any;
 	selectOptions?: { key: string; value: string }[];
 }
