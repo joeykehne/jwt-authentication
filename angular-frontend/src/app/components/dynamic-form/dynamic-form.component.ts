@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+	ChangeDetectorRef,
+	Component,
+	EventEmitter,
+	Input,
+	OnInit,
+	Output,
+} from '@angular/core';
 import {
 	FormBuilder,
 	FormGroup,
@@ -18,14 +25,18 @@ import { PasswordValidator } from 'src/app/validators/password.validator';
 	templateUrl: './dynamic-form.component.html',
 	styleUrl: './dynamic-form.component.scss',
 })
-export class DynamicFormComponent {
+export class DynamicFormComponent implements OnInit {
 	@Input() fields: I_FormField[] = [];
 	@Input() submitText = 'Submit';
 	@Output() formSubmit = new EventEmitter();
 
 	form!: FormGroup;
 
-	constructor(private fb: FormBuilder, private toastService: ToastService) {}
+	constructor(
+		private fb: FormBuilder,
+		private toastService: ToastService,
+		private cdRef: ChangeDetectorRef
+	) {}
 
 	ngOnInit(): void {
 		const group: { [key: string]: any } = {};
@@ -39,6 +50,10 @@ export class DynamicFormComponent {
 		this.form = this.fb.group(group, {
 			validators: groupValidators,
 		});
+	}
+
+	ngAfterViewInit() {
+		this.cdRef.detectChanges();
 	}
 
 	getFieldErrors(field: I_FormField): string[] {
