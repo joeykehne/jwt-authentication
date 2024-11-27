@@ -6,6 +6,7 @@ export interface I_ValidationResult {
 
 export class ConfirmPasswordValidator {
 	public static mismatch(form: FormGroup) {
+
 		const password = form.get('password')?.value;
 		const confirmPassword = form.get('confirmPassword')?.value;
 

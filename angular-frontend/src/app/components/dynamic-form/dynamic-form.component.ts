@@ -1,8 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { I_FormField } from 'src/app/interfaces';
+import {
+	FormBuilder,
+	FormGroup,
+	ReactiveFormsModule,
+	Validators,
+} from '@angular/forms';
+import { I_FormField, I_Validator } from 'src/app/interfaces';
 import { ToastService } from 'src/app/services/toast.service';
+import { ConfirmPasswordValidator } from 'src/app/validators/confirmPassword.validator';
+import { PasswordValidator } from 'src/app/validators/password.validator';
 
 @Component({
 	selector: 'app-dynamic-form',
@@ -20,10 +27,62 @@ export class DynamicFormComponent {
 	constructor(private fb: FormBuilder, private toastService: ToastService) {}
 
 	ngOnInit(): void {
-		this.form = this.fb.group({});
+		const group: { [key: string]: any } = {};
 		this.fields.forEach((field) => {
-			this.form.addControl(field.name, this.fb.control(field.value || ''));
+			const validators = this.mapValidators(field.validators);
+			group[field.name] = [field.value || '', validators];
 		});
+		this.form = this.fb.group(group, { validators:  ConfirmPasswordValidator.mismatch });
+	}
+
+	getFieldErrors(field: I_FormField): string[] {
+		const control = this.form.get(field.name);
+		if (!control || !control.errors) return [];
+
+		return Object.keys(control.errors).map((errorKey) => {
+			const validator = field.validators?.find((v) => v.name === errorKey);
+			return (
+				validator?.message || this.getDefaultErrorMessage(errorKey, field.label)
+			);
+		});
+	}
+
+	private mapValidators(validators?: I_Validator[]) {
+		if (!validators) return [];
+
+		return validators.map((validator) => {
+			switch (validator.name) {
+				case 'required':
+					return Validators.required;
+				case 'minLength':
+					return Validators.minLength(validator.value);
+				case 'maxLength':
+					return Validators.maxLength(validator.value);
+				case 'pattern':
+					return Validators.pattern(validator.value);
+				case 'strong':
+					return PasswordValidator.strong;
+				default:
+					return Validators.nullValidator;
+			}
+		});
+	}
+
+	private getDefaultErrorMessage(errorKey: string, label: string): string {
+		switch (errorKey) {
+			case 'required':
+				return '';
+			case 'email':
+				return 'Please enter a valid email address.';
+			case 'minlength':
+				return `${label} must be at least 6 characters long.`;
+			case 'strong':
+				return `${label} must contain at least one uppercase letter, one lowercase letter, and one number.`;
+			case 'mismatch':
+				return 'Passwords do not match.';
+			default:
+				return `${label} is invalid.`;
+		}
 	}
 
 	onSubmit(event: Event) {

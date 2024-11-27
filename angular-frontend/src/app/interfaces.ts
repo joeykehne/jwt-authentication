@@ -31,11 +31,18 @@ export interface I_Role {
 	permissions: I_Permission[];
 }
 
+export interface I_Validator {
+	name: 'required' | 'minLength' | 'maxLength' | 'pattern' | string;
+	value?: any;
+	message?: string;
+}
+
 export interface I_FormField {
 	type: 'text' | 'number' | 'select' | 'email' | 'password' | 'textarea';
 	label: string;
 	name: string;
 	required: boolean;
+	validators?: I_Validator[];
 	value?: any;
 	selectOptions?: { key: string; value: string }[];
 }
