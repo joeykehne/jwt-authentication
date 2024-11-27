@@ -70,17 +70,24 @@
 
 		<!-- Error Messages -->
 		<div
-			*ngIf="form.get(field.name)?.touched && form.get(field.name)?.invalid"
+			*ngIf="form.get(field.name)?.touched"
 			class="text-red-500 text-sm mt-1"
 		>
-			<!-- Required Error -->
-			<span *ngIf="form.get(field.name)?.errors?.['required']">
-				{{ field.label }} is required.
-			</span>
+			<ng-container *ngIf="form.get(field.name)?.invalid">
+				<!-- Required Error -->
+				<span *ngIf="form.get(field.name)?.errors?.['required']">
+					{{ field.label }} is required.
+				</span>
 
-			<!-- Dynamic Validator Errors -->
-			<span *ngFor="let error of getFieldErrors(field)">
-				{{ error }}
+				<!-- Dynamic Validator Errors -->
+				<span *ngFor="let error of getFieldErrors(field)">
+					{{ error }}
+				</span>
+			</ng-container>
+			<span *ngIf="field.name == 'confirmPassword'">
+				<ng-container *ngIf="form.errors?.['mismatch']">
+					Passwords do not match.
+				</ng-container>
 			</span>
 		</div>
 	</div>

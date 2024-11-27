@@ -32,7 +32,12 @@ export class DynamicFormComponent {
 			const validators = this.mapValidators(field.validators);
 			group[field.name] = [field.value || '', validators];
 		});
-		this.form = this.fb.group(group, { validators:  ConfirmPasswordValidator.mismatch });
+
+		const groupValidators = this.getGroupValidators(this.fields);
+
+		this.form = this.fb.group(group, {
+			validators: groupValidators,
+		});
 	}
 
 	getFieldErrors(field: I_FormField): string[] {
@@ -49,7 +54,6 @@ export class DynamicFormComponent {
 
 	private mapValidators(validators?: I_Validator[]) {
 		if (!validators) return [];
-
 		return validators.map((validator) => {
 			switch (validator.name) {
 				case 'required':
@@ -66,6 +70,16 @@ export class DynamicFormComponent {
 					return Validators.nullValidator;
 			}
 		});
+	}
+
+	getGroupValidators(fields: I_FormField[]): any[] {
+		const validators = [];
+
+		if (fields.some((field) => field.name === 'confirmPassword')) {
+			validators.push(ConfirmPasswordValidator.mismatch);
+		}
+
+		return validators;
 	}
 
 	private getDefaultErrorMessage(errorKey: string, label: string): string {
