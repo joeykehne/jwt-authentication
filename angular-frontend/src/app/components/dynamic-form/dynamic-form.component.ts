@@ -61,9 +61,13 @@ export class DynamicFormComponent implements OnInit {
 		if (!control || !control.errors) return [];
 
 		return Object.keys(control.errors).map((errorKey) => {
-			const validator = field.validators?.find((v) => v.name === errorKey);
+			const validator = field.validators?.find(
+				(v) => v.name.toLowerCase() === errorKey.toLowerCase()
+			);
+
 			return (
-				validator?.message || this.getDefaultErrorMessage(errorKey, field.label)
+				validator?.message ||
+				this.getDefaultErrorMessage(errorKey, field.label, validator?.value)
 			);
 		});
 	}
@@ -100,7 +104,11 @@ export class DynamicFormComponent implements OnInit {
 		return validators;
 	}
 
-	private getDefaultErrorMessage(errorKey: string, label: string): string {
+	private getDefaultErrorMessage(
+		errorKey: string,
+		label: string,
+		value?: any
+	): string {
 		switch (errorKey) {
 			case 'required':
 				return '';
@@ -110,6 +118,10 @@ export class DynamicFormComponent implements OnInit {
 				return `${label} must contain at least one uppercase letter, one lowercase letter, and one number.`;
 			case 'confirmPassword':
 				return 'Passwords do not match.';
+			case 'minlength':
+				return `${label} must be at least ${value} characters long.`;
+			case 'maxlength':
+				return `${label} must be less than ${value} characters long.`;
 			default:
 				return `${label} is invalid.`;
 		}
