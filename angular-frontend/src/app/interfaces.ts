@@ -30,3 +30,11 @@ export interface I_Role {
 	name: string;
 	permissions: I_Permission[];
 }
+
+export interface I_FormField {
+	type: 'text' | 'number' | 'select' | 'email' | 'password' | 'textarea';
+	label: string;
+	name: string;
+	value?: any;
+	selectOptions?: { key: string; value: string }[];
+}

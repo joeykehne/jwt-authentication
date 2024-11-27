@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { DynamicFormComponent } from './components/dynamic-form/dynamic-form.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { LoadingComponent } from './components/loading/loading.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
@@ -44,6 +45,7 @@ import { SettingsModule } from './pages/settings/settings.module';
 		SettingsModule,
 		FormsModule,
 		LoadingComponent,
+		DynamicFormComponent,
 	],
 	providers: [
 		{

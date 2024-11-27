@@ -1,0 +1,30 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+	<!-- Iterate over fields -->
+	@for (field of fields; track $index) {
+	<div>
+		<label>{{ field.label }}</label>
+		<!-- Switch case for field types -->
+		@switch (field.type) { @case ('text') {
+		<input [formControlName]="field.name" type="text" />
+		} @case ('number') {
+		<input [formControlName]="field.name" type="number" />
+		} @case ('select') {
+		<select [formControlName]="field.name">
+			<!-- Iterate over select options -->
+			@for (option of field.selectOptions; track $index) {
+			<option [value]="option.key">{{ option.value }}</option>
+			}
+		</select>
+		} @case ('email') {
+		<input [formControlName]="field.name" type="email" />
+		} @case ('password') {
+		<input [formControlName]="field.name" type="password" />
+		} @case ('textarea') {
+		<textarea [formControlName]="field.name"></textarea>
+		} @default {
+		<p>Unsupported field type: {{ field.type }}</p>
+		} }
+	</div>
+	}
+	<button type="submit">Submit</button>
+</form>
