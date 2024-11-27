@@ -1,10 +1,8 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { I_FormField } from 'src/app/interfaces';
 import { AuthService } from 'src/app/services/auth.service';
-import { ConfirmPasswordValidator } from 'src/app/validators/confirmPassword.validator';
-import { PasswordValidator } from 'src/app/validators/password.validator';
 
 @Component({
 	selector: 'app-register',
@@ -12,57 +10,78 @@ import { PasswordValidator } from 'src/app/validators/password.validator';
 	styleUrl: './register.component.scss',
 })
 export class RegisterComponent {
-	registerForm: FormGroup;
+	formFields: I_FormField[] = [
+		{
+			name: 'name',
+			label: 'Name',
+			type: 'text',
+			required: true,
+		},
+		{
+			name: 'email',
+			label: 'Email',
+			type: 'email',
+			required: true,
+			validators: [
+				{
+					name: 'email',
+				},
+			],
+		},
+		{
+			name: 'password',
+			label: 'Password',
+			type: 'password',
+			required: true,
+			validators: [
+				{
+					name: 'password',
+				},
+			],
+		},
+		{
+			name: 'confirmPassword',
+			label: 'Confirm password',
+			type: 'password',
+			required: true,
+			validators: [
+				{
+					name: 'confirmPassword',
+				},
+			],
+		},
+	];
 
 	emailAlreadyExists = false;
 	somethingElseWrong = false;
 
 	attemptingLogin = false;
 
-	constructor(
-		private fb: FormBuilder,
-		private authService: AuthService,
-		private router: Router
-	) {
-		this.registerForm = this.fb.group(
-			{
-				name: ['', Validators.required],
-				email: ['', [Validators.required, Validators.email]],
-				password: [
-					'',
-					[
-						Validators.required,
-						Validators.minLength(6),
-						PasswordValidator.strong,
-					],
-				],
-				confirmPassword: ['', [Validators.required]],
-			},
-			{ validators: ConfirmPasswordValidator.mismatch }
-		);
-	}
+	constructor(private authService: AuthService, private router: Router) {}
 
-	async onSubmit() {
-		if (this.registerForm.valid) {
-			try {
-				this.attemptingLogin = true;
-				await this.authService.register({
-					name: this.registerForm.value.name,
-					email: this.registerForm.value.email,
-					password: this.registerForm.value.password,
-				});
-				this.router.navigate(['']);
-			} catch (e) {
-				const error = e as HttpErrorResponse;
+	async onFormSubmit(formValue: {
+		name: string;
+		email: string;
+		password: string;
+	}) {
+		try {
+			this.attemptingLogin = true;
+			await this.authService.register({
+				name: formValue.name,
+				email: formValue.email,
+				password: formValue.password,
+			});
+			this.router.navigate(['']);
+		} catch (e) {
+			const error = e as HttpErrorResponse;
 
-				if (error.status == 409) {
-					this.emailAlreadyExists = true;
-				} else {
-					this.somethingElseWrong = true;
-				}
-			} finally {
-				this.attemptingLogin = false;
+			if (error.status == 409) {
+				this.emailAlreadyExists = true;
+			} else {
+				this.somethingElseWrong = true;
 			}
+		} finally {
+			this.attemptingLogin = false;
 		}
 	}
 }

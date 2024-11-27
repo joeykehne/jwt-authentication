@@ -1,7 +1,7 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { I_FormField } from 'src/app/interfaces';
 import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
@@ -10,7 +10,25 @@ import { AuthService } from 'src/app/services/auth.service';
 	styleUrl: './login.component.scss',
 })
 export class LoginComponent {
-	loginForm: FormGroup;
+	formFields: I_FormField[] = [
+		{
+			name: 'email',
+			label: 'Email',
+			type: 'email',
+			required: true,
+			validators: [
+				{
+					name: 'email',
+				},
+			],
+		},
+		{
+			name: 'password',
+			label: 'Password',
+			type: 'password',
+			required: true,
+		},
+	];
 
 	attemptingLogin = false;
 
@@ -19,56 +37,38 @@ export class LoginComponent {
 	userNotFound = false;
 	somethingElseWrong = false;
 
-	constructor(
-		private fb: FormBuilder,
-		private authService: AuthService,
-		private router: Router
-	) {
-		this.loginForm = this.fb.group({
-			email: ['', [Validators.required, Validators.email]],
-			password: ['', [Validators.required]],
-		});
+	constructor(private authService: AuthService, private router: Router) {}
 
-		if (true) {
-			this.loginForm.patchValue({
-				email: '',
-				password: '',
+	async onFormSubmit(formValue: { email: string; password: string }) {
+		try {
+			this.attemptingLogin = true;
+
+			await this.authService.login({
+				email: formValue.email,
+				password: formValue.password,
 			});
-		}
-	}
+			this.router.navigate(['/']);
+		} catch (e) {
+			const error = e as HttpErrorResponse;
 
-	async onSubmit() {
-		if (this.loginForm.valid) {
-			try {
-				this.attemptingLogin = true;
+			this.wrongPassword = false;
+			this.userNotFound = false;
+			this.somethingElseWrong = false;
 
-				await this.authService.login({
-					email: this.loginForm.value.email,
-					password: this.loginForm.value.password,
-				});
-				this.router.navigate(['/']);
-			} catch (e) {
-				const error = e as HttpErrorResponse;
-
-				this.wrongPassword = false;
-				this.userNotFound = false;
-				this.somethingElseWrong = false;
-
-				if (error.status == 429) {
-					this.tooManyRetries = true;
-					await setTimeout(() => {
-						this.tooManyRetries = false;
-					}, 60000);
-				} else if (error.status == 401) {
-					this.wrongPassword = true;
-				} else if (error.status == 404) {
-					this.userNotFound = true;
-				} else {
-					this.somethingElseWrong = true;
-				}
-			} finally {
-				this.attemptingLogin = false;
+			if (error.status == 429) {
+				this.tooManyRetries = true;
+				await setTimeout(() => {
+					this.tooManyRetries = false;
+				}, 60000);
+			} else if (error.status == 401) {
+				this.wrongPassword = true;
+			} else if (error.status == 404) {
+				this.userNotFound = true;
+			} else {
+				this.somethingElseWrong = true;
 			}
+		} finally {
+			this.attemptingLogin = false;
 		}
 	}
 }

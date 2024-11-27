@@ -85,14 +85,14 @@
 				</span>
 			</ng-container>
 			<span *ngIf="field.name == 'confirmPassword'">
-				<ng-container *ngIf="form.errors?.['mismatch']">
+				<ng-container *ngIf="form.errors?.['confirmPassword']">
 					Passwords do not match.
 				</ng-container>
 			</span>
 		</div>
 	</div>
 
-	<button type="submit" class="btn btn-primary" [disabled]="form.invalid">
-		Submit
+	<button type="submit" class="btn btn-primary" [disabled]="isFormInvalid()">
+		{{ submitText }}
 	</button>
 </form>

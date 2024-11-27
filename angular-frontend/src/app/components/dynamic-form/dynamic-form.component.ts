@@ -20,6 +20,7 @@ import { PasswordValidator } from 'src/app/validators/password.validator';
 })
 export class DynamicFormComponent {
 	@Input() fields: I_FormField[] = [];
+	@Input() submitText = 'Submit';
 	@Output() formSubmit = new EventEmitter();
 
 	form!: FormGroup;
@@ -64,8 +65,10 @@ export class DynamicFormComponent {
 					return Validators.maxLength(validator.value);
 				case 'pattern':
 					return Validators.pattern(validator.value);
-				case 'strong':
-					return PasswordValidator.strong;
+				case 'password':
+					return PasswordValidator.password;
+				case 'email':
+					return Validators.email;
 				default:
 					return Validators.nullValidator;
 			}
@@ -76,7 +79,7 @@ export class DynamicFormComponent {
 		const validators = [];
 
 		if (fields.some((field) => field.name === 'confirmPassword')) {
-			validators.push(ConfirmPasswordValidator.mismatch);
+			validators.push(ConfirmPasswordValidator.confirmPassword);
 		}
 
 		return validators;
@@ -88,15 +91,17 @@ export class DynamicFormComponent {
 				return '';
 			case 'email':
 				return 'Please enter a valid email address.';
-			case 'minlength':
-				return `${label} must be at least 6 characters long.`;
-			case 'strong':
+			case 'password':
 				return `${label} must contain at least one uppercase letter, one lowercase letter, and one number.`;
-			case 'mismatch':
+			case 'confirmPassword':
 				return 'Passwords do not match.';
 			default:
 				return `${label} is invalid.`;
 		}
+	}
+
+	async isFormInvalid(): Promise<boolean> {
+		return this.form.invalid;
 	}
 
 	onSubmit(event: Event) {
