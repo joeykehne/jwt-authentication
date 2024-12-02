@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
 import { LoggedInGuard } from './guards/logged-in.guard';
+import { ForgotPasswordComponent } from './pages/_auth/forgot-password/forgot-password.component';
 import { LoginComponent } from './pages/_auth/login/login.component';
 import { LogoutComponent } from './pages/_auth/logout/logout.component';
 import { RegisterComponent } from './pages/_auth/register/register.component';
@@ -15,6 +16,10 @@ const routes: Routes = [
 		path: 'register',
 		component: RegisterComponent,
 		canActivate: [LoggedInGuard],
+	},
+	{
+		path: 'forgotPassword',
+		component: ForgotPasswordComponent,
 	},
 	{ path: 'logout', component: LogoutComponent },
 	{

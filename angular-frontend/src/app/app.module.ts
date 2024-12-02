@@ -10,12 +10,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { CardComponent } from './components/card/card.component';
 import { DynamicFormComponent } from './components/dynamic-form/dynamic-form.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { LoadingComponent } from './components/loading/loading.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { ConfirmationDialogComponent } from './dialog/confirmation-dialog/confirmation-dialog.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
+import { ForgotPasswordComponent } from './pages/_auth/forgot-password/forgot-password.component';
 import { LoginComponent } from './pages/_auth/login/login.component';
 import { LogoutComponent } from './pages/_auth/logout/logout.component';
 import { RegisterComponent } from './pages/_auth/register/register.component';
@@ -34,6 +36,7 @@ import { SettingsModule } from './pages/settings/settings.module';
 		NavbarComponent,
 		FooterComponent,
 		ConfirmationDialogComponent,
+		ForgotPasswordComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -46,6 +49,7 @@ import { SettingsModule } from './pages/settings/settings.module';
 		FormsModule,
 		LoadingComponent,
 		DynamicFormComponent,
+		CardComponent
 	],
 	providers: [
 		{

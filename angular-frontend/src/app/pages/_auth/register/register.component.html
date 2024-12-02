@@ -1,34 +1,24 @@
-<section class="p-5 flex justify-center">
-	<div class="md:w-[28rem] w-[90vw] my-20">
-		<div class="flex justify-center">
-			<div class="w-full max-w-md">
-				<div class="card bg-neutral shadow-xl">
-					<div class="card-body">
-						<ng-container *ngIf="!attemptingLogin; else loading">
-							<h2 class="text-center text-2xl mb-6">Register</h2>
-							<app-dynamic-form
-								[fields]="formFields"
-								(formSubmit)="onFormSubmit($event)"
-								submitText="Register"
-							></app-dynamic-form>
-							<label *ngIf="emailAlreadyExists" class="label">
-								<span class="label-text-alt text-red-500"
-									>This email is already rergistered.
-								</span>
-							</label>
-							<div class="flex justify-center mt-6">
-								<span>
-									Already have an account?
-									<a class="hover:underline" routerLink="/login">Login here.</a>
-								</span>
-							</div>
-						</ng-container>
-					</div>
-				</div>
-			</div>
+<app-card>
+	<ng-container *ngIf="!attemptingLogin; else loading">
+		<h2 class="text-center text-2xl mb-6">Register</h2>
+		<app-dynamic-form
+			[fields]="formFields"
+			(formSubmit)="onFormSubmit($event)"
+			submitText="Register"
+		></app-dynamic-form>
+		<label *ngIf="emailAlreadyExists" class="label">
+			<span class="label-text-alt text-red-500"
+				>This email is already rergistered.
+			</span>
+		</label>
+		<div class="flex justify-center mt-6">
+			<span>
+				Already have an account?
+				<a class="hover:underline" routerLink="/login">Login here.</a>
+			</span>
 		</div>
-	</div>
-</section>
+	</ng-container>
+</app-card>
 
 <ng-template #loading>
 	<app-loading></app-loading>
