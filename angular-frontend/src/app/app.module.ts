@@ -24,6 +24,7 @@ import { RegisterComponent } from './pages/_auth/register/register.component';
 import { HomeComponent } from './pages/home/home.component';
 import { ProtectedComponent } from './pages/protected/protected.component';
 import { SettingsModule } from './pages/settings/settings.module';
+import { ResetPasswordComponent } from './pages/_auth/reset-password/reset-password.component';
 
 @NgModule({
 	declarations: [
@@ -37,6 +38,7 @@ import { SettingsModule } from './pages/settings/settings.module';
 		FooterComponent,
 		ConfirmationDialogComponent,
 		ForgotPasswordComponent,
+  ResetPasswordComponent,
 	],
 	imports: [
 		BrowserModule,
