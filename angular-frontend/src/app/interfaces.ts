@@ -9,6 +9,7 @@ export interface I_User {
 	name: string;
 	email: string;
 	isPaying: boolean;
+	emailVerified: boolean;
 	password?: string;
 	roles?: I_Role[];
 }

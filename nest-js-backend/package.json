@@ -28,6 +28,7 @@
     "@nestjs/mongoose": "^10.0.10",
     "@nestjs/platform-express": "^10.0.0",
     "@nestjs/schedule": "^4.1.1",
+    "@nestjs/throttler": "^6.2.1",
     "@nestjs/typeorm": "^10.0.2",
     "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",

@@ -13,6 +13,7 @@ import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { accessTokenExpiresIn, refreshTokenExpiresIn } from 'src/constants';
+import { T_TokenType } from 'src/interfaces';
 import { User } from 'src/user/user.entity';
 import { LessThan, Repository } from 'typeorm';
 import { RefreshToken } from './refreshToken.entity';
@@ -98,6 +99,8 @@ export class AuthService {
     // Save the new user to the database
     await this.userRepository.save(user);
 
+    await this.sendEmailVerificationMail(email);
+
     // Generate a new access token
     const accessToken = await this.generateNewAccessToken(user);
 
@@ -116,25 +119,30 @@ export class AuthService {
     await this.refreshTokenRepository.delete({ user: { id: userId } });
   }
 
-  async validateToken(token: string) {
+  async validateToken(token: string, type: T_TokenType): Promise<User> {
+    let payload;
     try {
-      const payload = this.jwtService.verify(token, {
+      payload = this.jwtService.verify(token, {
         secret: this.configService.get<string>('JWT_SECRET'),
       });
-
-      const user = await this.userRepository.findOne({
-        where: { id: payload.id },
-        relations: ['roles', 'roles.permissions'],
-      });
-
-      if (!user) {
-        throw new UnauthorizedException('User not found');
-      }
-
-      return user;
     } catch {
       throw new ForbiddenException('Invalid token');
     }
+
+    if (type && payload.type != type) {
+      throw new ForbiddenException('Invalid token type');
+    }
+
+    const user = await this.userRepository.findOne({
+      where: { id: payload.id },
+      relations: ['roles', 'roles.permissions'],
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    return user;
   }
 
   async validateRefreshToken(refreshToken: string): Promise<User> {
@@ -168,6 +176,7 @@ export class AuthService {
         id: user.id,
         name: user.name,
         email: user.email,
+        type: 'access' as T_TokenType,
       },
       { expiresIn: accessTokenExpiresIn },
     );
@@ -178,7 +187,7 @@ export class AuthService {
     oldRefreshToken?: string,
   ): Promise<string> {
     const refreshToken = this.jwtService.sign(
-      { id: user.id, email: user.email },
+      { id: user.id, email: user.email, type: 'refresh' as T_TokenType },
       { expiresIn: `${refreshTokenExpiresIn}s` }, // Ensure correct format
     );
 
@@ -215,7 +224,7 @@ export class AuthService {
 
     if (!tokenValue) throw new UnauthorizedException('No token provided');
 
-    const user = await this.validateToken(tokenValue);
+    const user = await this.validateToken(tokenValue, 'access');
 
     const userPermissions = user.roles
       .flatMap((role) => role.permissions)
@@ -243,7 +252,7 @@ export class AuthService {
 
     // Generate a new reset password link
     const resetPasswordToken = this.jwtService.sign(
-      { email: user.email },
+      { email: user.email, type: 'resetPassword' as T_TokenType },
       { expiresIn: '30m' }, // 30 minutes
     );
 
@@ -278,6 +287,48 @@ export class AuthService {
     user.resetPasswordToken = null;
 
     // Save the user
+    await this.userRepository.save(user);
+  }
+
+  createVerifyEmailToken(user: User) {
+    return this.jwtService.sign(
+      { id: user.id, type: 'emailVerification' as T_TokenType },
+      { expiresIn: '1d' }, // 1 day
+    );
+  }
+
+  async sendEmailVerificationMail(email: string) {
+    const user = await this.userRepository.findOne({ where: { email } });
+
+    if (!user || user.emailVerified) {
+      return false;
+    }
+
+    const emailToken = this.createVerifyEmailToken(user);
+
+    this.mailerService.sendMail({
+      to: email,
+      subject: 'Verify your email',
+      html: `<p>Click <a href="${this.configService.get(
+        'FRONTEND_URL',
+      )}/verifyEmail/${emailToken}">here</a> to verify your email.</p>`,
+    });
+  }
+
+  async verifyEmail(token: string) {
+    let user;
+    try {
+      user = await this.validateToken(token, 'emailVerification');
+    } catch {
+      throw new ForbiddenException('Invalid token');
+    }
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    user.emailVerified = true;
+
     await this.userRepository.save(user);
   }
 }

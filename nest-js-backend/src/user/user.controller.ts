@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthGuard } from 'src/auth/auth.guard';
 import { SetPermissions } from 'src/auth/permission/permissions.decorator';
 import { UserService } from './user.service';
@@ -8,6 +16,11 @@ import { UserService } from './user.service';
 @Controller('users')
 export class UserController {
   constructor(private readonly userService: UserService) {}
+
+  @Get('me')
+  async me(@Req() req: any) {
+    return this.userService.findOne(req.user);
+  }
 
   // Find all users
   @Get()

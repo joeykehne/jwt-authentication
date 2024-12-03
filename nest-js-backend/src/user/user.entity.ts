@@ -41,4 +41,7 @@ export class User {
 
   @Column({ default: false })
   isPaying: boolean;
+
+  @Column({ default: false })
+  emailVerified: boolean;
 }

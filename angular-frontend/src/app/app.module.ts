@@ -21,10 +21,11 @@ import { ForgotPasswordComponent } from './pages/_auth/forgot-password/forgot-pa
 import { LoginComponent } from './pages/_auth/login/login.component';
 import { LogoutComponent } from './pages/_auth/logout/logout.component';
 import { RegisterComponent } from './pages/_auth/register/register.component';
+import { ResetPasswordComponent } from './pages/_auth/reset-password/reset-password.component';
+import { VerifyEmailComponent } from './pages/_auth/verify-email/verify-email.component';
 import { HomeComponent } from './pages/home/home.component';
 import { ProtectedComponent } from './pages/protected/protected.component';
 import { SettingsModule } from './pages/settings/settings.module';
-import { ResetPasswordComponent } from './pages/_auth/reset-password/reset-password.component';
 
 @NgModule({
 	declarations: [
@@ -38,7 +39,8 @@ import { ResetPasswordComponent } from './pages/_auth/reset-password/reset-passw
 		FooterComponent,
 		ConfirmationDialogComponent,
 		ForgotPasswordComponent,
-  ResetPasswordComponent,
+		ResetPasswordComponent,
+		VerifyEmailComponent,
 	],
 	imports: [
 		BrowserModule,
@@ -51,7 +53,7 @@ import { ResetPasswordComponent } from './pages/_auth/reset-password/reset-passw
 		FormsModule,
 		LoadingComponent,
 		DynamicFormComponent,
-		CardComponent
+		CardComponent,
 	],
 	providers: [
 		{

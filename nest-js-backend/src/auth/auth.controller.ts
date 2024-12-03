@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { Request, Response } from 'express';
 import { refreshTokenExpiresIn } from 'src/constants';
 import { AuthGuard } from './auth.guard';
@@ -151,5 +152,17 @@ export class AuthController {
     });
 
     return this.authService.resetPassword(email, body.password);
+  }
+
+  @Throttle({ default: { limit: 1, ttl: 1000 * 60 * 10 } }) // 1 request per 10 minutes
+  @UseGuards(AuthGuard, ThrottlerGuard)
+  @Post('requestEmailVerification')
+  async requestEmailVerification(@Req() req: any) {
+    return this.authService.sendEmailVerificationMail(req.user.email);
+  }
+
+  @Get('verifyEmail/:token')
+  async verifyEmail(@Param('token') token: string) {
+    return this.authService.verifyEmail(token);
   }
 }

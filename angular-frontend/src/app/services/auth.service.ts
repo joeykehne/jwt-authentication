@@ -136,12 +136,22 @@ export class AuthService {
 	}
 
 	canAccess$(permissions: string[]): Observable<{ [key: string]: boolean }> {
-		return this.http.post<{ [key: string]: boolean }>(
-			`${environment.apiUrl}/auth/canAccess`,
-			{
-				permissions,
-			}
-		);
+		return this.http
+			.post<{ [key: string]: boolean }>(
+				`${environment.apiUrl}/auth/canAccess`,
+				{
+					permissions,
+				}
+			)
+			.pipe(
+				catchError(() => {
+					const result: { [key: string]: boolean } = {};
+					permissions.forEach((permission) => {
+						result[permission] = false;
+					});
+					return of(result);
+				})
+			);
 	}
 
 	forceNewAccessToken(): Observable<string> {

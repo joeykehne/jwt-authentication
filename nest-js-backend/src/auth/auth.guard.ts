@@ -40,7 +40,7 @@ export class AuthGuard implements CanActivate {
 
     if (!tokenValue) throw new UnauthorizedException('No token provided');
 
-    const user = await this.authService.validateToken(tokenValue);
+    const user = await this.authService.validateToken(tokenValue, 'access');
     request.user = user;
 
     const userPermissions = user.roles

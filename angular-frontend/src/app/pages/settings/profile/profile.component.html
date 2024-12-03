@@ -8,5 +8,15 @@
 	<app-copy-code-box
 		text="{{ authService.user$ | async | json }}"
 	></app-copy-code-box>
-	<app-copy-code-box text="Das ist ein Test"></app-copy-code-box>
+
+	<p>
+		Email verified: <span>{{ user?.emailVerified }}</span>
+	</p>
+	<button
+		*ngIf="user && !user?.emailVerified"
+		class="w-fit btn btn-primary"
+		(click)="requestEmailVerification()"
+	>
+		Get verfication mail
+	</button>
 </div>
