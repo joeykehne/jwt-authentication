@@ -135,4 +135,21 @@ export class AuthController {
   async logOutUser(@Param('id') userId: string) {
     return this.authService.logoutUserEverywhere(userId);
   }
+
+  @Post('forgotPassword')
+  async forgotPassword(@Body() body: { email: string }) {
+    return this.authService.sendForgotPasswordMail(body.email);
+  }
+
+  @Post('resetPassword')
+  async resetPassword(
+    @Body() body: { token: string; password: string },
+  ): Promise<void> {
+    // Verify the reset password token
+    const { email } = this.jwtService.verify(body.token, {
+      secret: this.configService.get<string>('JWT_SECRET'),
+    });
+
+    return this.authService.resetPassword(email, body.password);
+  }
 }

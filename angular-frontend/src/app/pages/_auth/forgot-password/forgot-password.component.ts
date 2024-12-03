@@ -1,5 +1,8 @@
+import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 import { I_FormField } from 'src/app/interfaces';
+import { environment } from 'src/environments/environment';
 
 @Component({
 	selector: 'app-forgot-password',
@@ -22,9 +25,20 @@ export class ForgotPasswordComponent {
 	];
 
 	emailSent = false;
+	emailSentTo = '';
 
-	onFormSubmit(formValue: { email: string }) {
+	sendingEmail = false;
+
+	constructor(private http: HttpClient) {}
+
+	async onFormSubmit(formValue: { email: string }) {
+		this.sendingEmail = true;
+
+		await firstValueFrom(
+			this.http.post(`${environment.apiUrl}/auth/forgotPassword`, formValue)
+		);
 		this.emailSent = true;
-		console.log(formValue);
+		this.emailSentTo = formValue.email;
+		this.sendingEmail = false;
 	}
 }

@@ -1,47 +1,42 @@
 <app-card>
-	<ng-container *ngIf="!attemptingLogin; else loading">
-		<h2 class="text-center text-2xl mb-6">Login</h2>
-		<app-dynamic-form
-			[fields]="formFields"
-			(formSubmit)="onFormSubmit($event)"
-			submitText="Login"
-		></app-dynamic-form>
-		<label *ngIf="tooManyRetries" class="label">
-			<span class="label-text-alt text-red-500"
-				>Too many tries. Please wait 1 minute until you can try again.</span
-			>
-		</label>
-		<label *ngIf="wrongPassword" class="label">
-			<span class="label-text-alt text-red-500"
-				>The password provided was not correct. If you forgot your password
-				<u
-					><b><a href="forgotPassword">click here</a></b></u
-				></span
-			>
-		</label>
-		<label *ngIf="userNotFound" class="label">
-			<span class="label-text-alt text-red-500"
-				>The email provided is not associated with an account. You can create a
-				new account
-				<u
-					><b><a href="register">here</a></b></u
-				></span
-			>
-		</label>
-		<label *ngIf="somethingElseWrong" class="label">
-			<span class="label-text-alt text-red-500"
-				>Something went wrong. Please try again.</span
-			>
-		</label>
-		<div class="flex justify-center mt-6">
-			<span>
-				New here?
-				<a class="hover:underline" routerLink="/register">Register now.</a>
-			</span>
-		</div>
-	</ng-container>
+	<h2 class="text-center text-2xl mb-6">Login</h2>
+	<app-dynamic-form
+		[fields]="formFields"
+		(formSubmit)="onFormSubmit($event)"
+		submitText="Login"
+		[submitLoading]="attemptingLogin"
+	></app-dynamic-form>
+	<label *ngIf="tooManyRetries" class="label">
+		<span class="label-text-alt text-red-500"
+			>Too many tries. Please wait 1 minute until you can try again.</span
+		>
+	</label>
+	<label *ngIf="wrongPassword" class="label">
+		<span class="label-text-alt text-red-500"
+			>The password provided was not correct. If you forgot your password
+			<u
+				><b><a href="forgotPassword">click here</a></b></u
+			></span
+		>
+	</label>
+	<label *ngIf="userNotFound" class="label">
+		<span class="label-text-alt text-red-500"
+			>The email provided is not associated with an account. You can create a
+			new account
+			<u
+				><b><a href="register">here</a></b></u
+			></span
+		>
+	</label>
+	<label *ngIf="somethingElseWrong" class="label">
+		<span class="label-text-alt text-red-500"
+			>Something went wrong. Please try again.</span
+		>
+	</label>
+	<div class="flex justify-center mt-6">
+		<span>
+			New here?
+			<a class="hover:underline" routerLink="/register">Register now.</a>
+		</span>
+	</div>
 </app-card>
-
-<ng-template #loading>
-	<app-loading></app-loading>
-</ng-template>

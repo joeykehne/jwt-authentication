@@ -17,17 +17,19 @@ import { I_FormField, I_Validator } from 'src/app/interfaces';
 import { ToastService } from 'src/app/services/toast.service';
 import { ConfirmPasswordValidator } from 'src/app/validators/confirmPassword.validator';
 import { PasswordValidator } from 'src/app/validators/password.validator';
+import { LoadingComponent } from '../loading/loading.component';
 
 @Component({
 	selector: 'app-dynamic-form',
 	standalone: true,
-	imports: [CommonModule, ReactiveFormsModule],
+	imports: [CommonModule, ReactiveFormsModule, LoadingComponent],
 	templateUrl: './dynamic-form.component.html',
 	styleUrl: './dynamic-form.component.scss',
 })
 export class DynamicFormComponent implements OnInit {
 	@Input() fields: I_FormField[] = [];
 	@Input() submitText = 'Submit';
+	@Input() submitLoading = false;
 	@Output() formSubmit = new EventEmitter();
 
 	form!: FormGroup;
@@ -131,7 +133,7 @@ export class DynamicFormComponent implements OnInit {
 		return this.form.invalid;
 	}
 
-	onSubmit(event: Event) {
+	async onSubmit(event: Event) {
 		if (this.form.invalid) {
 			this.toastService.addToast({
 				message: 'Please fill out all required fields',

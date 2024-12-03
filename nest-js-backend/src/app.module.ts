@@ -1,3 +1,4 @@
+import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
@@ -25,6 +26,24 @@ import { UserModule } from './user/user.module';
         database: configService.get('MYSQL_DATABASE'),
         synchronize: process.env.NODE_ENV !== 'production',
         autoLoadEntities: true,
+      }),
+    }),
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) => ({
+        transport: {
+          host: configService.get('MAIL_HOST'),
+          port: 465,
+          secure: true,
+          auth: {
+            user: configService.get('MAIL_USER'),
+            pass: configService.get('MAIL_PASSWORD'),
+          },
+        },
+        defaults: {
+          from: '"Nodemailer" <nodemailer@kehne-it.de>',
+        },
       }),
     }),
     AuthModule,

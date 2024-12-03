@@ -55,7 +55,7 @@ export class RegisterComponent {
 	emailAlreadyExists = false;
 	somethingElseWrong = false;
 
-	attemptingLogin = false;
+	attemptingRegister = false;
 
 	constructor(private authService: AuthService, private router: Router) {}
 
@@ -65,7 +65,7 @@ export class RegisterComponent {
 		password: string;
 	}) {
 		try {
-			this.attemptingLogin = true;
+			this.attemptingRegister = true;
 			await this.authService.register({
 				name: formValue.name,
 				email: formValue.email,
@@ -81,7 +81,7 @@ export class RegisterComponent {
 				this.somethingElseWrong = true;
 			}
 		} finally {
-			this.attemptingLogin = false;
+			this.attemptingRegister = false;
 		}
 	}
 }

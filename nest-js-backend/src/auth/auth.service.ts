@@ -1,3 +1,4 @@
+import { MailerService } from '@nestjs-modules/mailer';
 import {
   BadRequestException,
   ConflictException,
@@ -19,6 +20,7 @@ import { RefreshToken } from './refreshToken.entity';
 @Injectable()
 export class AuthService {
   constructor(
+    private mailerService: MailerService,
     private jwtService: JwtService,
     private configService: ConfigService,
     @InjectRepository(User)
@@ -230,5 +232,52 @@ export class AuthService {
     }
 
     return result;
+  }
+
+  async sendForgotPasswordMail(email: string) {
+    const user = await this.userRepository.findOne({ where: { email } });
+
+    if (!user) {
+      return false;
+    }
+
+    // Generate a new reset password link
+    const resetPasswordToken = this.jwtService.sign(
+      { email: user.email },
+      { expiresIn: '30m' }, // 30 minutes
+    );
+
+    // Save the reset password token to the user
+    user.resetPasswordToken = resetPasswordToken;
+
+    await this.userRepository.save(user);
+
+    // Send the reset password link to the user's email
+    await this.mailerService.sendMail({
+      to: email,
+      subject: 'Reset your password',
+      html: `<p>Click <a href="${this.configService.get('FRONTEND_URL')}/resetPassword/${resetPasswordToken}">here</a> to reset your password. The link is only active for 30 minutes.</p>`,
+    });
+  }
+
+  async resetPassword(email: string, newPassword: string) {
+    // Find the user by email
+    const user = await this.userRepository.findOne({ where: { email } });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update the user's password
+    user.password = hashedPassword;
+
+    // Remove the reset password token
+    user.resetPasswordToken = null;
+
+    // Save the user
+    await this.userRepository.save(user);
   }
 }
