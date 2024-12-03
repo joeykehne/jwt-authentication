@@ -49,7 +49,12 @@ export class ProfileComponent {
 						type: 'error',
 					});
 					break;
-
+				case 400:
+					this.toastService.addToast({
+						message: 'Your email is already verified',
+						type: 'error',
+					});
+					break;
 				default:
 					break;
 			}

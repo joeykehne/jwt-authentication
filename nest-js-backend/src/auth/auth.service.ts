@@ -300,8 +300,12 @@ export class AuthService {
   async sendEmailVerificationMail(email: string) {
     const user = await this.userRepository.findOne({ where: { email } });
 
-    if (!user || user.emailVerified) {
+    if (!user) {
       return false;
+    }
+
+    if (user.emailVerified) {
+      throw new BadRequestException('Email already verified');
     }
 
     const emailToken = this.createVerifyEmailToken(user);
