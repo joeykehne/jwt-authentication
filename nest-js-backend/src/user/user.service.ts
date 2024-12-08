@@ -15,7 +15,10 @@ export class UserService {
   ) {}
 
   async findOne(user: User): Promise<User> {
-    return this.userRepository.findOne({ where: { id: user.id } });
+    return this.userRepository.findOne({
+      where: { id: user.id },
+      relations: ['roles', 'roles.permissions'],
+    });
   }
 
   // Find all users

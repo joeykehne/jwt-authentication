@@ -12,7 +12,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { JwtService } from '@nestjs/jwt';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { Request, Response } from 'express';
 import { refreshTokenExpiresIn } from 'src/constants';
@@ -24,7 +23,6 @@ import { SetPermissions } from './permission/permissions.decorator';
 export class AuthController {
   constructor(
     private authService: AuthService,
-    private jwtService: JwtService,
     private configService: ConfigService,
   ) {}
 
@@ -79,16 +77,6 @@ export class AuthController {
 
     // Check if refresh token is provided
     if (!refreshToken) throw new ForbiddenException('No refresh token');
-
-    // Verify and decode the refresh token
-    let payload;
-    try {
-      payload = this.jwtService.verify(refreshToken, {
-        secret: this.configService.get<string>('JWT_SECRET'),
-      });
-    } catch (e) {
-      throw new ForbiddenException('Invalid refresh token');
-    }
 
     const user = await this.authService.validateRefreshToken(refreshToken);
 
@@ -147,9 +135,10 @@ export class AuthController {
     @Body() body: { token: string; password: string },
   ): Promise<void> {
     // Verify the reset password token
-    const { email } = this.jwtService.verify(body.token, {
-      secret: this.configService.get<string>('JWT_SECRET'),
-    });
+    const { email } = await this.authService.validateToken(
+      body.token,
+      'resetPassword',
+    );
 
     return this.authService.resetPassword(email, body.password);
   }

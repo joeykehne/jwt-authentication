@@ -14,7 +14,7 @@ import { UserService } from './user.service';
     forwardRef(() => AuthModule),
   ],
   providers: [UserService],
-  exports: [],
+  exports: [UserService],
   controllers: [UserController],
 })
 export class UserModule {}

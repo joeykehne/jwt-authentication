@@ -119,7 +119,7 @@ export class AuthService {
     await this.refreshTokenRepository.delete({ user: { id: userId } });
   }
 
-  async validateToken(token: string, type: T_TokenType): Promise<User> {
+  async validateToken(token: string, type: T_TokenType): Promise<any> {
     let payload;
     try {
       payload = this.jwtService.verify(token, {
@@ -133,26 +133,11 @@ export class AuthService {
       throw new ForbiddenException('Invalid token type');
     }
 
-    const user = await this.userRepository.findOne({
-      where: { id: payload.id },
-      relations: ['roles', 'roles.permissions'],
-    });
-
-    if (!user) {
-      throw new UnauthorizedException('User not found');
-    }
-
-    return user;
+    return payload;
   }
 
   async validateRefreshToken(refreshToken: string): Promise<User> {
-    try {
-      this.jwtService.verify(refreshToken, {
-        secret: this.configService.get<string>('JWT_SECRET'),
-      });
-    } catch {
-      throw new ForbiddenException('Invalid refresh token');
-    }
+    await this.validateToken(refreshToken, 'refresh');
 
     const tokenEntity = await this.refreshTokenRepository.findOne({
       where: { refreshToken },
@@ -224,7 +209,16 @@ export class AuthService {
 
     if (!tokenValue) throw new UnauthorizedException('No token provided');
 
-    const user = await this.validateToken(tokenValue, 'access');
+    const payload = await this.validateToken(tokenValue, 'access');
+
+    const user = await this.userRepository.findOne({
+      where: { id: payload.id },
+      relations: ['roles', 'roles.permissions'],
+    });
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
 
     const userPermissions = user.roles
       .flatMap((role) => role.permissions)
@@ -320,15 +314,15 @@ export class AuthService {
   }
 
   async verifyEmail(token: string) {
-    let user;
-    try {
-      user = await this.validateToken(token, 'emailVerification');
-    } catch {
-      throw new ForbiddenException('Invalid token');
-    }
+    const payload = await this.validateToken(token, 'emailVerification');
+
+    const user = await this.userRepository.findOne({
+      where: { id: payload.id },
+      relations: ['roles', 'roles.permissions'],
+    });
 
     if (!user) {
-      throw new NotFoundException('User not found');
+      throw new UnauthorizedException('User not found');
     }
 
     user.emailVerified = true;

@@ -6,6 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { UserService } from 'src/user/user.service';
 import { AuthService } from './auth.service';
 
 @Injectable()
@@ -13,6 +14,7 @@ export class AuthGuard implements CanActivate {
   constructor(
     private authService: AuthService,
     private reflector: Reflector,
+    private userService: UserService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -40,7 +42,14 @@ export class AuthGuard implements CanActivate {
 
     if (!tokenValue) throw new UnauthorizedException('No token provided');
 
-    const user = await this.authService.validateToken(tokenValue, 'access');
+    const payload = await this.authService.validateToken(tokenValue, 'access');
+
+    const user = await this.userService.findOne(payload.id);
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
     request.user = user;
 
     const userPermissions = user.roles
