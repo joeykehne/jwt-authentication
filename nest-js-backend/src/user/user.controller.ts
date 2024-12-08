@@ -19,7 +19,7 @@ export class UserController {
 
   @Get('me')
   async me(@Req() req: any) {
-    return this.userService.findOne(req.user);
+    return req.user;
   }
 
   // Find all users
