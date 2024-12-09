@@ -13,6 +13,9 @@ import { environment } from 'src/environments/environment';
 })
 export class ProfileComponent {
 	user: I_User | null = null;
+	imagePreview: string | null = null;
+
+	userLoading = true;
 
 	constructor(
 		public authService: AuthService,
@@ -20,14 +23,19 @@ export class ProfileComponent {
 		private toastService: ToastService
 	) {}
 
-	ngOnInit(): void {
-		this.loadUser();
+	async ngOnInit() {
+		await this.loadUser();
+		this.userLoading = false;
 	}
 
 	async loadUser() {
 		const user = await firstValueFrom(
 			this.http.get<I_User>(`${environment.apiUrl}/users/me`)
 		);
+
+		if (user.profilePictureUrl) {
+			this.imagePreview = `${environment.apiUrl}/users/profilePicture/${user.id}`;
+		}
 
 		this.user = user;
 	}
@@ -65,5 +73,23 @@ export class ProfileComponent {
 			message: 'Verification email sent',
 			type: 'success',
 		});
+	}
+
+	async profilePictureSelected(file: File) {
+		const formData = new FormData();
+		formData.append('profilePicture', file);
+
+		try {
+			await firstValueFrom(
+				this.http.post(`${environment.apiUrl}/users/profilePicture`, formData)
+			);
+
+			this.imagePreview = URL.createObjectURL(file);
+		} catch (e: any) {
+			this.toastService.addToast({
+				message: e.error.message,
+				type: 'error',
+			});
+		}
 	}
 }

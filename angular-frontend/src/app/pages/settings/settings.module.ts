@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogModule } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { CopyCodeBoxComponent } from 'src/app/components/copy-code-box/copy-code-box.component';
+import { FileUploadComponent } from 'src/app/components/file-upload/file-upload.component';
 import { LoadingComponent } from 'src/app/components/loading/loading.component';
 import { PermissionSelectorComponent } from 'src/app/components/permission-selector/permission-selector.component';
 import { RoleSelectorComponent } from 'src/app/components/role-selector/role-selector.component';
@@ -42,6 +43,7 @@ import { UsersComponent } from './users/users.component';
 		RoleSelectorComponent,
 		LoadingComponent,
 		CopyCodeBoxComponent,
+		FileUploadComponent,
 	],
 })
 export class SettingsModule {}

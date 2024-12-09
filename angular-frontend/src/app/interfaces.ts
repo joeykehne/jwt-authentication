@@ -12,6 +12,7 @@ export interface I_User {
 	emailVerified: boolean;
 	password?: string;
 	roles?: I_Role[];
+	profilePictureUrl?: string;
 }
 
 export interface I_NavSection {

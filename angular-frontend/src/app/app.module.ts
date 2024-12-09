@@ -12,6 +12,7 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CardComponent } from './components/card/card.component';
 import { DynamicFormComponent } from './components/dynamic-form/dynamic-form.component';
+import { FileUploadComponent } from './components/file-upload/file-upload.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { LoadingComponent } from './components/loading/loading.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
@@ -54,6 +55,7 @@ import { SettingsModule } from './pages/settings/settings.module';
 		LoadingComponent,
 		DynamicFormComponent,
 		CardComponent,
+		FileUploadComponent,
 	],
 	providers: [
 		{
