@@ -1,8 +1,9 @@
 # compiled output
-/dist
-/node_modules
-/build
-/staging
+dist
+node_modules
+build
+staging
+.angular
 
 # Logs
 logs
@@ -41,6 +42,7 @@ lerna-debug.log*
 .env.test.local
 .env.production.local
 .env.local
+.env
 
 # temp directory
 .temp
