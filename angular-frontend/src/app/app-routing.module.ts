@@ -37,6 +37,16 @@ const routes: Routes = [
 		component: ProtectedComponent,
 		canActivate: [AuthGuard],
 	},
+	{
+		path: 'settings',
+		loadChildren: () =>
+			import('./pages/settings/settings.module').then((m) => m.SettingsModule),
+	},
+
+	{
+		path: '**',
+		redirectTo: '',
+	},
 ];
 
 @NgModule({

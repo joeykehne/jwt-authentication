@@ -9,7 +9,7 @@ import { UsersComponent } from './users/users.component';
 
 const routes: Routes = [
 	{
-		path: 'settings',
+		path: '',
 		component: SettingsComponent,
 		children: [
 			{ path: '', redirectTo: 'profile', pathMatch: 'full' },
