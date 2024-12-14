@@ -5,9 +5,11 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { RouterModule } from '@angular/router';
 import { CopyCodeBoxComponent } from 'src/app/components/copy-code-box/copy-code-box.component';
 import { FileUploadComponent } from 'src/app/components/file-upload/file-upload.component';
+import { ImageLoaderComponent } from 'src/app/components/image-loader/image-loader.component';
 import { LoadingComponent } from 'src/app/components/loading/loading.component';
 import { PermissionSelectorComponent } from 'src/app/components/permission-selector/permission-selector.component';
 import { RoleSelectorComponent } from 'src/app/components/role-selector/role-selector.component';
+import { TextLoaderComponent } from 'src/app/components/text-loader/text-loader.component';
 import { AddPermissionDialogComponent } from './permissions/add-permission-dialog/add-permission-dialog.component';
 import { PermissionsComponent } from './permissions/permissions.component';
 import { UpdatePermissionDialogComponent } from './permissions/update-permission-dialog/update-permission-dialog.component';
@@ -44,6 +46,8 @@ import { UsersComponent } from './users/users.component';
 		LoadingComponent,
 		CopyCodeBoxComponent,
 		FileUploadComponent,
+		ImageLoaderComponent,
+		TextLoaderComponent,
 	],
 })
 export class SettingsModule {}

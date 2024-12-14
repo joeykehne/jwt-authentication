@@ -1,0 +1,29 @@
+<div class="inline-block relative w-{{ size }} h-{{ size }}">
+	<!-- Skeleton Placeholder -->
+	<div
+		*ngIf="isLoading"
+		class="absolute inset-0 flex items-center justify-center skeleton"
+	></div>
+
+	<!-- Actual Image -->
+	<img
+		[src]="imageSrc"
+		alt="Loaded image"
+		class="w-full h-full object-cover rounded-lg transition-opacity duration-300"
+		[class.opacity-0]="isLoading"
+		(load)="onImageLoad()"
+		(error)="onImageError()"
+	/>
+	<app-file-upload
+		*ngIf="showUpload && !isLoading"
+		class="absolute inset-0 h-full cursor-pointer z-30"
+		[ngClass]="{
+			' opacity-0 group-hover:opacity-60 bg-base-200 transition-opacity ':
+				imageSrc
+		}"
+		[label]="!imageSrc ? 'Upload' : 'Change'"
+		[showUploadInformation]="false"
+		[showReselectFileText]="false"
+		(fileSelected)="onFileSelected($event)"
+	></app-file-upload>
+</div>

@@ -21,21 +21,6 @@ export class AuthService {
 	private tokenRequest$: Observable<string> | null = null;
 	public loading$ = new BehaviorSubject<boolean>(false);
 
-	public user$ = this.accessToken$.pipe(
-		switchMap((accessToken) => {
-			if (!accessToken) {
-				return of(null);
-			}
-
-			try {
-				const decodedToken: any = jwt_decode.jwtDecode(accessToken);
-				return of(decodedToken);
-			} catch (e) {
-				return of(null);
-			}
-		})
-	);
-
 	public isLoggedIn$ = this.accessToken$
 		.asObservable()
 		.pipe(switchMap((accessToken) => of(!!accessToken)));

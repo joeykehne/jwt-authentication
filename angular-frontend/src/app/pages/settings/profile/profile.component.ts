@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { I_User } from 'src/app/interfaces';
 import { AuthService } from 'src/app/services/auth.service';
 import { ToastService } from 'src/app/services/toast.service';
@@ -12,9 +12,8 @@ import { environment } from 'src/environments/environment';
 	styleUrl: './profile.component.scss',
 })
 export class ProfileComponent {
-	user: I_User | null = null;
-	imagePreview: string | null = null;
-
+	user$ = new BehaviorSubject<I_User | null>(null);
+	imagePreview$ = new BehaviorSubject<string | null>(null);
 	userLoading = true;
 
 	constructor(
@@ -34,10 +33,14 @@ export class ProfileComponent {
 		);
 
 		if (user.profilePictureUrl) {
-			this.imagePreview = `${environment.apiUrl}/users/profilePicture/${user.id}`;
+			this.imagePreview$.next(
+				`${environment.apiUrl}/users/profilePicture/${user.id}`
+			);
 		}
 
-		this.user = user;
+		this.user$.next(user);
+
+		console.log(user);
 	}
 
 	async requestEmailVerification() {
@@ -53,7 +56,7 @@ export class ProfileComponent {
 				case 429:
 					this.toastService.addToast({
 						message:
-							'You already requested a verification email. PLease wait 10 minutes before trying again',
+							'You already requested a verification email. Please wait 10 minutes before trying again',
 						type: 'error',
 					});
 					break;
@@ -84,7 +87,7 @@ export class ProfileComponent {
 				this.http.post(`${environment.apiUrl}/users/profilePicture`, formData)
 			);
 
-			this.imagePreview = URL.createObjectURL(file);
+			this.imagePreview$.next(URL.createObjectURL(file));
 		} catch (e: any) {
 			this.toastService.addToast({
 				message: e.error.message,

@@ -13,6 +13,12 @@ module.exports = {
   safelist: [
     {
       pattern: /alert-.+/,
+    },
+    {
+      pattern: /w-.+/,
+    },
+    {
+      pattern: /h-.+/,
     }
   ]
 }
