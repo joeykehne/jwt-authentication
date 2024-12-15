@@ -24,7 +24,7 @@
 					<li class="menu-title">
 						<span>{{ navSection.name }}</span>
 					</li>
-					<li *ngFor="let url of navSection.urls">
+					<li *ngFor="let url of navSection.urls" class="mb-1">
 						<a [routerLink]="url.routerLink">{{ url.name }}</a>
 					</li>
 				</div>

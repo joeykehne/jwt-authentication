@@ -15,6 +15,7 @@ export class ProfileComponent {
 	user$ = new BehaviorSubject<I_User | null>(null);
 	imagePreview$ = new BehaviorSubject<string | null>(null);
 	userLoading = true;
+	verificationMailSend = false;
 
 	constructor(
 		public authService: AuthService,
@@ -36,11 +37,11 @@ export class ProfileComponent {
 			this.imagePreview$.next(
 				`${environment.apiUrl}/users/profilePicture/${user.id}`
 			);
+		} else {
+			this.imagePreview$.next('assets/images/profile-picture-placeholder.jpg');
 		}
 
 		this.user$.next(user);
-
-		console.log(user);
 	}
 
 	async requestEmailVerification() {
@@ -71,6 +72,8 @@ export class ProfileComponent {
 			}
 			return;
 		}
+
+		this.verificationMailSend = true;
 
 		this.toastService.addToast({
 			message: 'Verification email sent',
