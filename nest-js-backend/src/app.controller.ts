@@ -1,5 +1,6 @@
 import { Controller, Get, UseGuards } from '@nestjs/common';
 import { AuthGuard } from './auth/auth.guard';
+import { SetPermissions } from './auth/permission/permissions.decorator';
 
 @Controller()
 export class AppController {
@@ -13,6 +14,8 @@ export class AppController {
     return { message: 'protected' };
   }
 
+  @SetPermissions('admin')
+  @UseGuards(AuthGuard)
   @Get('admin')
   admin() {
     return { message: 'admin' };

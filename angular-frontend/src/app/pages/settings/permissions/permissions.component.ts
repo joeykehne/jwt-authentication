@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { firstValueFrom } from 'rxjs';
 import { ConfirmationDialogComponent } from 'src/app/dialog/confirmation-dialog/confirmation-dialog.component';
 import { I_Permission } from 'src/app/interfaces';
+import { ToastService } from 'src/app/services/toast.service';
 import { environment } from 'src/environments/environment';
 import { AddPermissionDialogComponent } from './add-permission-dialog/add-permission-dialog.component';
 import { UpdatePermissionDialogComponent } from './update-permission-dialog/update-permission-dialog.component';
@@ -15,17 +16,38 @@ import { UpdatePermissionDialogComponent } from './update-permission-dialog/upda
 })
 export class PermissionsComponent {
 	permissions: I_Permission[] = [];
+	loading = true;
 
-	constructor(private http: HttpClient, private dialog: MatDialog) {}
+	constructor(
+		private http: HttpClient,
+		private dialog: MatDialog,
+		private toastService: ToastService
+	) {}
 
 	async ngOnInit() {
 		await this.reloadPermissions();
 	}
 
 	async reloadPermissions() {
-		this.permissions = await firstValueFrom(
-			this.http.get<I_Permission[]>(`${environment.apiUrl}/permissions`)
-		);
+		try {
+			this.permissions = await firstValueFrom(
+				this.http.get<I_Permission[]>(`${environment.apiUrl}/permissions`)
+			);
+		} catch (e: any) {
+			if (e.status === 403) {
+				this.toastService.addToast({
+					type: 'error',
+					message: 'You do not have permission to view permissions.',
+				});
+				return;
+			}
+			this.toastService.addToast({
+				type: 'error',
+				message: 'Failed to load permissions',
+			});
+		} finally {
+			this.loading = false;
+		}
 	}
 
 	async onAddPermission() {
@@ -52,6 +74,14 @@ export class PermissionsComponent {
 	}
 
 	async onDeletePermission(permission: I_Permission) {
+		if (permission.name.toLocaleLowerCase().includes('admin')) {
+			this.toastService.addToast({
+				type: 'error',
+				message: 'You cannot delete the admin permission',
+			});
+			return;
+		}
+
 		const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
 			data: {
 				title: 'Delete Permission',

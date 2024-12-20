@@ -4,6 +4,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { firstValueFrom } from 'rxjs';
 import { ConfirmationDialogComponent } from 'src/app/dialog/confirmation-dialog/confirmation-dialog.component';
 import { I_Role } from 'src/app/interfaces';
+import { ToastService } from 'src/app/services/toast.service';
 import { environment } from 'src/environments/environment';
 import { AddRoleDialogComponent } from './add-role-dialog/add-role-dialog.component';
 import { UpdateRoleDialogComponent } from './update-role-dialog/update-role-dialog.component';
@@ -15,16 +16,37 @@ import { UpdateRoleDialogComponent } from './update-role-dialog/update-role-dial
 })
 export class RolesComponent {
 	roles: I_Role[] = [];
+	loading = true;
 
-	constructor(private http: HttpClient, private dialog: MatDialog) {}
+	constructor(
+		private http: HttpClient,
+		private dialog: MatDialog,
+		private toastService: ToastService
+	) {}
 
 	async ngOnInit() {
 		await this.reloadRoles();
 	}
 	async reloadRoles() {
-		this.roles = await firstValueFrom(
-			this.http.get<I_Role[]>(`${environment.apiUrl}/roles`)
-		);
+		try {
+			this.roles = await firstValueFrom(
+				this.http.get<I_Role[]>(`${environment.apiUrl}/roles`)
+			);
+		} catch (e: any) {
+			if (e.status === 403) {
+				this.toastService.addToast({
+					type: 'error',
+					message: 'You do not have permission to view roles.',
+				});
+				return;
+			}
+			this.toastService.addToast({
+				type: 'error',
+				message: 'Failed to load roles',
+			});
+		} finally {
+			this.loading = false;
+		}
 	}
 
 	async onAddRole() {
@@ -51,6 +73,14 @@ export class RolesComponent {
 	}
 
 	async onDeleteRole(role: I_Role) {
+		if (role.name.toLocaleLowerCase().includes('admin')) {
+			this.toastService.addToast({
+				type: 'error',
+				message: 'You cannot delete an admin role',
+			});
+			return;
+		}
+
 		const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
 			data: {
 				title: 'Delete Role',

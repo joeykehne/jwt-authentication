@@ -1,6 +1,6 @@
 <h1 class="text-3xl mb-4">Users</h1>
 
-<table *ngIf="users.length; else loading" class="table w-full">
+<table *ngIf="users.length" class="table w-full">
 	<thead>
 		<tr>
 			<th>Name</th>
@@ -32,7 +32,6 @@
 	</tbody>
 </table>
 
+<app-loading *ngIf="loading"></app-loading>
+
 <ng-template #emptyCell>-</ng-template>
-<ng-template #loading>
-	<app-loading></app-loading>
-</ng-template>

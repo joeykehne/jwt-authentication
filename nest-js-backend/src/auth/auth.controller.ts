@@ -78,7 +78,7 @@ export class AuthController {
     // Check if refresh token is provided
     if (!refreshToken) throw new ForbiddenException('No refresh token');
 
-    const user = await this.authService.validateRefreshToken(refreshToken);
+    const user = await this.authService.validateRefreshToken(res, refreshToken);
 
     // Generate a new access token
     const accessToken = await this.authService.generateNewAccessToken(user);

@@ -12,11 +12,14 @@ import { JwtService } from '@nestjs/jwt';
 import { Cron } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { Response } from 'express';
 import { accessTokenExpiresIn, refreshTokenExpiresIn } from 'src/constants';
 import { T_TokenType } from 'src/interfaces';
 import { User } from 'src/user/user.entity';
 import { LessThan, Repository } from 'typeorm';
+import { Permission } from './permission/permission.entity';
 import { RefreshToken } from './refreshToken.entity';
+import { Role } from './role/role.entity';
 
 @Injectable()
 export class AuthService {
@@ -28,6 +31,10 @@ export class AuthService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(RefreshToken)
     private readonly refreshTokenRepository: Repository<RefreshToken>,
+    @InjectRepository(Role)
+    private readonly roleRepository: Repository<Role>,
+    @InjectRepository(Permission)
+    private readonly permissionRepository: Repository<Permission>,
   ) {}
 
   @Cron('0 * * * *') // Runs every hour
@@ -101,6 +108,27 @@ export class AuthService {
 
     await this.sendEmailVerificationMail(email);
 
+    // get the amount of users in the database
+    const count = await this.userRepository.count();
+
+    if (count === 1) {
+      const permission = this.permissionRepository.create({
+        name: 'admin',
+        description: 'Admin permission',
+      });
+      await this.permissionRepository.save(permission);
+
+      const role = this.roleRepository.create({
+        name: 'admin',
+        permissions: [permission],
+      });
+      await this.roleRepository.save(role);
+
+      user.roles = [role];
+
+      await this.userRepository.save(user);
+    }
+
     // Generate a new access token
     const accessToken = await this.generateNewAccessToken(user);
 
@@ -136,7 +164,10 @@ export class AuthService {
     return payload;
   }
 
-  async validateRefreshToken(refreshToken: string): Promise<User> {
+  async validateRefreshToken(
+    res: Response,
+    refreshToken: string,
+  ): Promise<User> {
     await this.validateToken(refreshToken, 'refresh');
 
     const tokenEntity = await this.refreshTokenRepository.findOne({
@@ -145,7 +176,8 @@ export class AuthService {
     });
 
     if (!tokenEntity || tokenEntity.expiresAt < new Date()) {
-      throw new ForbiddenException('Refresh token expired or not found');
+      res.clearCookie('refreshToken', { httpOnly: true });
+      throw new UnauthorizedException('Invalid refresh token');
     }
 
     return tokenEntity.user;

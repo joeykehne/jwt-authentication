@@ -19,7 +19,8 @@ import { RoleService } from './role.service';
 export class RoleController {
   constructor(private readonly roleService: RoleService) {}
 
-  // Create a new role
+  @SetPermissions('iam')
+  @UseGuards(AuthGuard)
   @Post()
   async createRole(@Body() body: { name: string; permissionIds: string[] }) {
     const { name, permissionIds } = body;
@@ -27,7 +28,8 @@ export class RoleController {
     return role;
   }
 
-  // Update an existing role
+  @SetPermissions('iam')
+  @UseGuards(AuthGuard)
   @Put(':id')
   async updateRole(
     @Param('id') roleId: string,
@@ -44,14 +46,16 @@ export class RoleController {
     return updatedRole;
   }
 
-  // Delete a role
+  @SetPermissions('iam')
+  @UseGuards(AuthGuard)
   @Delete(':id')
   async deleteRole(@Param('id') roleId: string) {
     await this.roleService.deleteRole(roleId);
     return { message: 'Role deleted successfully' };
   }
 
-  // Get all roles
+  @SetPermissions('iam')
+  @UseGuards(AuthGuard)
   @Get()
   async getAllRoles() {
     return this.roleService.getAllRoles();

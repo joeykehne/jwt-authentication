@@ -8,6 +8,7 @@ import {
   Post,
   Req,
   Res,
+  UnauthorizedException,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -15,6 +16,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { AuthGuard } from 'src/auth/auth.guard';
+import { AuthService } from 'src/auth/auth.service';
 import { SetPermissions } from 'src/auth/permission/permissions.decorator';
 import { Public } from 'src/auth/public.decorator';
 import { UserService } from './user.service';
@@ -23,21 +25,43 @@ import { UserService } from './user.service';
 @UseGuards(AuthGuard)
 @Controller('users')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private authService: AuthService,
+  ) {}
 
+  @Public()
   @Get('me')
   async me(@Req() req: any) {
-    return req.user;
+    const token = req.headers['authorization'];
+
+    if (!token) throw new UnauthorizedException('No token provided');
+
+    const [, tokenValue] = token.split(' ');
+
+    if (!tokenValue) throw new UnauthorizedException('No token provided');
+
+    const payload = await this.authService.validateToken(tokenValue, 'access');
+
+    const user = await this.userService.findOne(payload.id);
+
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    return user;
   }
 
-  // Find all users
+  @SetPermissions('iam')
+  @UseGuards(AuthGuard)
   @Get()
   async findAll() {
     const users = await this.userService.findAll();
     return users;
   }
 
-  // Assign roles to a user
+  @SetPermissions('iam')
+  @UseGuards(AuthGuard)
   @Patch(':id/roles')
   async assignRoles(
     @Param('id') userId: string,

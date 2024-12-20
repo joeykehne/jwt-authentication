@@ -19,28 +19,32 @@ import { SetPermissions } from './permissions.decorator';
 export class PermissionController {
   constructor(private readonly permissionService: PermissionService) {}
 
-  // Create a new permission
+  @SetPermissions('iam')
+  @UseGuards(AuthGuard)
   @Post()
   async createPermission(@Body() body: Permission) {
     const permission = await this.permissionService.createPermission(body);
     return permission;
   }
 
-  // update a permission
+  @SetPermissions('iam')
+  @UseGuards(AuthGuard)
   @Put(':id')
   async updatePermission(@Param('id') id: string, @Body() body: Permission) {
     const permission = await this.permissionService.updatePermission(id, body);
     return permission;
   }
 
-  // delete a permission
+  @SetPermissions('iam')
+  @UseGuards(AuthGuard)
   @Delete(':id')
   async deletePermission(@Param('id') id: string) {
     await this.permissionService.deletePermission(id);
     return { message: 'Permission deleted successfully' };
   }
 
-  // Get all permissions
+  @SetPermissions('iam')
+  @UseGuards(AuthGuard)
   @Get()
   async getAllPermissions() {
     return this.permissionService.getAllPermissions();

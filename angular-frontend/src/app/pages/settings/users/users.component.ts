@@ -15,6 +15,7 @@ import { UpdateUserDialogComponent } from './update-user-dialog/update-user-dial
 })
 export class UsersComponent implements OnInit {
 	users: I_User[] = [];
+	loading = true;
 
 	constructor(
 		private http: HttpClient,
@@ -23,9 +24,29 @@ export class UsersComponent implements OnInit {
 	) {}
 
 	async ngOnInit() {
-		this.users = await firstValueFrom(
-			this.http.get<I_User[]>(`${environment.apiUrl}/users`)
-		);
+		await this.reloadUsers();
+	}
+
+	async reloadUsers() {
+		try {
+			this.users = await firstValueFrom(
+				this.http.get<I_User[]>(`${environment.apiUrl}/users`)
+			);
+		} catch (e: any) {
+			if (e.status === 403) {
+				this.toast.addToast({
+					type: 'error',
+					message: 'You do not have permission to view users.',
+				});
+				return;
+			}
+			this.toast.addToast({
+				type: 'error',
+				message: 'Failed to load users',
+			});
+		} finally {
+			this.loading = false;
+		}
 	}
 
 	async onUpdateUser(user: I_User) {
