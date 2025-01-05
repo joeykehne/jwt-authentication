@@ -1,6 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Component } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { BehaviorSubject, firstValueFrom } from 'rxjs';
+import { ChangePasswordDialogComponent } from 'src/app/dialog/change-password-dialog/change-password-dialog.component';
 import { I_User } from 'src/app/interfaces';
 import { AuthService } from 'src/app/services/auth.service';
 import { ToastService } from 'src/app/services/toast.service';
@@ -20,7 +22,8 @@ export class ProfileComponent {
 	constructor(
 		public authService: AuthService,
 		private http: HttpClient,
-		private toastService: ToastService
+		private toastService: ToastService,
+		private dialog: MatDialog
 	) {}
 
 	async ngOnInit() {
@@ -97,5 +100,11 @@ export class ProfileComponent {
 				type: 'error',
 			});
 		}
+	}
+
+	async onChanegPasswordClicked() {
+		const dialogRef = this.dialog.open(ChangePasswordDialogComponent);
+
+		await firstValueFrom(dialogRef.afterClosed());
 	}
 }

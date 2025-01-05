@@ -11,7 +11,7 @@ import { environment } from 'src/environments/environment';
 	templateUrl: './reset-password.component.html',
 	styleUrl: './reset-password.component.scss',
 })
-export class ResetPasswordComponent implements OnInit {
+export class ChangePasswordComponent implements OnInit {
 	formFields: I_FormField[] = [
 		{
 			name: 'password',
@@ -85,7 +85,7 @@ export class ResetPasswordComponent implements OnInit {
 		this.sendingRequest = true;
 
 		await firstValueFrom(
-			this.http.post(`${environment.apiUrl}/auth/resetPassword`, {
+			this.http.post(`${environment.apiUrl}/auth/changePassword`, {
 				token: this.resetToken,
 				password: formValue.password,
 			})

@@ -6,7 +6,7 @@ import { ForgotPasswordComponent } from './pages/_auth/forgot-password/forgot-pa
 import { LoginComponent } from './pages/_auth/login/login.component';
 import { LogoutComponent } from './pages/_auth/logout/logout.component';
 import { RegisterComponent } from './pages/_auth/register/register.component';
-import { ResetPasswordComponent } from './pages/_auth/reset-password/reset-password.component';
+import { ChangePasswordComponent } from './pages/_auth/reset-password/reset-password.component';
 import { VerifyEmailComponent } from './pages/_auth/verify-email/verify-email.component';
 import { HomeComponent } from './pages/home/home.component';
 import { ProtectedComponent } from './pages/protected/protected.component';
@@ -24,8 +24,8 @@ const routes: Routes = [
 		component: ForgotPasswordComponent,
 	},
 	{
-		path: 'resetPassword/:token',
-		component: ResetPasswordComponent,
+		path: 'changePassword/:token',
+		component: ChangePasswordComponent,
 	},
 	{
 		path: 'verifyEmail/:token',

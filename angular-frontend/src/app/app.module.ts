@@ -16,13 +16,14 @@ import { FileUploadComponent } from './components/file-upload/file-upload.compon
 import { FooterComponent } from './components/footer/footer.component';
 import { LoadingComponent } from './components/loading/loading.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
+import { ChangePasswordDialogComponent } from './dialog/change-password-dialog/change-password-dialog.component';
 import { ConfirmationDialogComponent } from './dialog/confirmation-dialog/confirmation-dialog.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { ForgotPasswordComponent } from './pages/_auth/forgot-password/forgot-password.component';
 import { LoginComponent } from './pages/_auth/login/login.component';
 import { LogoutComponent } from './pages/_auth/logout/logout.component';
 import { RegisterComponent } from './pages/_auth/register/register.component';
-import { ResetPasswordComponent } from './pages/_auth/reset-password/reset-password.component';
+import { ChangePasswordComponent } from './pages/_auth/reset-password/reset-password.component';
 import { VerifyEmailComponent } from './pages/_auth/verify-email/verify-email.component';
 import { HomeComponent } from './pages/home/home.component';
 import { ProtectedComponent } from './pages/protected/protected.component';
@@ -40,8 +41,9 @@ import { SettingsModule } from './pages/settings/settings.module';
 		FooterComponent,
 		ConfirmationDialogComponent,
 		ForgotPasswordComponent,
-		ResetPasswordComponent,
+		ChangePasswordComponent,
 		VerifyEmailComponent,
+		ChangePasswordDialogComponent,
 	],
 	imports: [
 		BrowserModule,

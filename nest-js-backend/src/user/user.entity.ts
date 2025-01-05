@@ -37,7 +37,7 @@ export class User {
   refreshTokens: RefreshToken[];
 
   @Column({ nullable: true })
-  resetPasswordToken: string;
+  changePasswordToken: string;
 
   @Column({ default: false })
   isPaying: boolean;

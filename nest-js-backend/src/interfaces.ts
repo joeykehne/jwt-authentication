@@ -1,5 +1,5 @@
 export type T_TokenType =
   | 'access'
   | 'refresh'
-  | 'resetPassword'
+  | 'changePassword'
   | 'emailVerification';

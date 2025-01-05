@@ -130,17 +130,31 @@ export class AuthController {
     return this.authService.sendForgotPasswordMail(body.email);
   }
 
-  @Post('resetPassword')
-  async resetPassword(
+  @UseGuards(AuthGuard)
+  @Post('verifyOldPassword')
+  async verifyOldPassword(@Req() req: any, @Body() body: { password: string }) {
+    return this.authService.verifyOldPassword(req.user.email, body.password);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('requestChangePasswordToken')
+  async requestChangePasswordToken(@Req() req: any) {
+    return {
+      token: await this.authService.generateChangePasswordToken(req.user.email),
+    };
+  }
+
+  @Post('changePassword')
+  async changePassword(
     @Body() body: { token: string; password: string },
   ): Promise<void> {
     // Verify the reset password token
     const { email } = await this.authService.validateToken(
       body.token,
-      'resetPassword',
+      'changePassword',
     );
 
-    return this.authService.resetPassword(email, body.password);
+    return this.authService.changePassword(email, body.password);
   }
 
   @Throttle({ default: { limit: 1, ttl: 1000 * 60 * 10 } }) // 1 request per 10 minutes
