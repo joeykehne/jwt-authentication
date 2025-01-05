@@ -135,6 +135,8 @@ export class AuthService {
     // Generate a new refresh token and store it in the database
     const refreshToken = await this.generateNewRefreshToken(user);
 
+    await this.userRepository.save({ ...user, registeredAt: new Date() });
+
     // Return the access token and refresh token
     return { accessToken, refreshToken };
   }
@@ -225,6 +227,8 @@ export class AuthService {
     }
 
     await this.refreshTokenRepository.save(newRefreshToken);
+
+    await this.userRepository.save({ ...user, lastLogin: new Date() });
 
     return refreshToken;
   }

@@ -47,4 +47,10 @@ export class User {
 
   @Column({ nullable: true })
   profilePictureUrl: string;
+
+  @Column({ nullable: true })
+  registeredAt: Date;
+
+  @Column({ nullable: true })
+  lastLogin: Date;
 }
