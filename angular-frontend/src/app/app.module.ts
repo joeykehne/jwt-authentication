@@ -62,7 +62,7 @@ import { SettingsModule } from './pages/settings/settings.module';
 	providers: [
 		{
 			provide: MAT_DIALOG_DEFAULT_OPTIONS,
-			useValue: { width: 'clamp(300px, 60%, 95%)' },
+			useValue: { width: 'clamp(300px, 60%, 95%)', autoFocus: false },
 		},
 		{
 			provide: HTTP_INTERCEPTORS,
