@@ -364,6 +364,8 @@ export class AuthService {
       throw new BadRequestException('Email already verified');
     }
 
+    await this.logoutUserEverywhere(user.id);
+
     const emailToken = this.createVerifyEmailToken(user);
 
     this.mailerService.sendMail({
