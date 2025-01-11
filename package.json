@@ -1,0 +1,16 @@
+{
+    "name": "jwt-authentication",
+    "version": "1.0.0",
+    "main": "index.js",
+    "scripts": {
+        "build-prod": "npm run cleanup && npm run build:frontend && npm run build:backend && npm run move",
+        "build:backend": "cd backend && npm i && npm run build",
+        "build:frontend": "cd frontend && npm i && npm run build",
+        "cleanup": "rm -rf srv",
+        "move": "cp -r backend/staging srv && cp backend/package.json srv && cp -r frontend/dist srv/frontend"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "description": ""
+}
