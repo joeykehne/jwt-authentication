@@ -12,6 +12,7 @@ import {
 	tap,
 } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { I_User } from '../interfaces';
 
 @Injectable({
 	providedIn: 'root',
@@ -19,7 +20,11 @@ import { environment } from 'src/environments/environment';
 export class AuthService {
 	private accessToken$ = new BehaviorSubject<string | null>(null);
 	private tokenRequest$: Observable<string> | null = null;
+	private isTokenRequestBlocked = false;
 	public loading$ = new BehaviorSubject<boolean>(false);
+
+	public user$ = new BehaviorSubject<I_User | null>(null);
+	public imagePreview$ = new BehaviorSubject<string | null>(null);
 
 	public isLoggedIn$ = this.accessToken$
 		.asObservable()
@@ -53,6 +58,7 @@ export class AuthService {
 			)
 		);
 		this.accessToken$.next(response.accessToken);
+		this.isTokenRequestBlocked = false;
 	}
 
 	async register(user: { name: string; email: string; password: string }) {
@@ -67,6 +73,7 @@ export class AuthService {
 		);
 
 		this.accessToken$.next(response.accessToken);
+		this.isTokenRequestBlocked = false;
 	}
 
 	async logout() {
@@ -76,9 +83,15 @@ export class AuthService {
 				withCredentials: true,
 			})
 		);
+		this.isTokenRequestBlocked = true;
 	}
 
 	getAccessToken(): Observable<string> {
+		// If the token request is blocked, return an empty string
+		if (this.isTokenRequestBlocked) {
+			return of('');
+		}
+
 		// If we already have a valid access token, return it
 		const currentToken = this.accessToken$.value;
 
@@ -98,9 +111,11 @@ export class AuthService {
 				if (newToken) {
 					// If a new token is received, update the accessToken
 					this.accessToken$.next(newToken);
+					this.initializeUser(); // Initialize the user
 				} else {
 					// Clear the accessToken if refresh failed
 					this.accessToken$.next(null);
+					this.resetVariables(); // Reset user and image
 				}
 				this.tokenRequest$ = null; // Reset after request
 				this.loading$.next(false); // Set loading to false
@@ -109,11 +124,18 @@ export class AuthService {
 			catchError(() => {
 				this.tokenRequest$ = null; // Reset on error
 				this.loading$.next(false); // Set loading to false
+				this.resetVariables(); // Reset user and image
 				return of(''); // Return empty string on error
 			})
 		);
 
 		return this.tokenRequest$;
+	}
+
+	resetVariables() {
+		this.accessToken$.next(null);
+		this.user$.next(null);
+		this.imagePreview$.next(null);
 	}
 
 	canAccess(permissions: string[]): Promise<{ [key: string]: boolean }> {
@@ -157,6 +179,7 @@ export class AuthService {
 				catchError((error) => {
 					console.error('Error refreshing token', error);
 					this.accessToken$.next(null); // Clear token on error
+					this.isTokenRequestBlocked = true; // Block further requests
 					return of(''); // Return an empty string on error
 				})
 			);
@@ -173,7 +196,10 @@ export class AuthService {
 			)
 			.pipe(
 				switchMap((response) => of(response.accessToken)), // Extract the new access token
-				catchError(() => of('')) // Return empty string on error
+				catchError(() => {
+					this.isTokenRequestBlocked = true;
+					return of('');
+				}) // Return empty string on error
 			);
 	}
 
@@ -185,5 +211,21 @@ export class AuthService {
 		} catch (e) {
 			return false;
 		}
+	}
+
+	async initializeUser() {
+		const user = await firstValueFrom(
+			this.http.get<I_User>(`${environment.apiUrl}/users/me`)
+		);
+
+		if (user.profilePictureUrl) {
+			this.imagePreview$.next(
+				`${environment.apiUrl}/users/profilePicture/${user.id}`
+			);
+		} else {
+			this.imagePreview$.next('assets/images/profile-picture-placeholder.jpg');
+		}
+
+		this.user$.next(user);
 	}
 }

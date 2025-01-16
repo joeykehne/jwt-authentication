@@ -71,6 +71,7 @@ export class RegisterComponent {
 				email: formValue.email,
 				password: formValue.password,
 			});
+			this.authService.initializeUser();
 			this.router.navigate(['']);
 		} catch (e) {
 			const error = e as HttpErrorResponse;

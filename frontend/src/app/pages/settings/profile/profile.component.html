@@ -1,7 +1,9 @@
 <h1 class="text-3xl mb-4">Profile</h1>
 
 <div class="flex flex-col gap-4">
-	<div *ngIf="imagePreview$ | async as imagePreview; else loadingImage">
+	<div
+		*ngIf="authService.imagePreview$ | async as imagePreview; else loadingImage"
+	>
 		<app-image-loader
 			class="group relative"
 			[src]="imagePreview"
@@ -15,31 +17,31 @@
 	<div class="flex flex-col gap-3">
 		<div>
 			<p class="label-text-alt mb-1">Name</p>
-			<app-text-loader [loading]="!(user$ | async)">
-				<p>{{ (user$ | async)?.name }}</p>
+			<app-text-loader [loading]="!(authService.user$ | async)">
+				<p>{{ (authService.user$ | async)?.name }}</p>
 			</app-text-loader>
 		</div>
 		<div>
 			<p class="label-text-alt mb-1">Email</p>
 			<div class="flex items-center">
-				<app-text-loader [loading]="!(user$ | async)">
-					<p>{{ (user$ | async)?.email }}</p>
+				<app-text-loader [loading]="!(authService.user$ | async)">
+					<p>{{ (authService.user$ | async)?.email }}</p>
 				</app-text-loader>
 				<span
-					*ngIf="user$ | async"
+					*ngIf="authService.user$ | async as user"
 					class="badge ms-2"
 					[ngClass]="{
-						'badge-success': (user$ | async)?.emailVerified,
-						'badge-error': !(user$ | async)?.emailVerified
+						'badge-success': user.emailVerified,
+						'badge-error': !user.emailVerified
 					}"
 				>
-					{{ (user$ | async)?.emailVerified ? "Verified" : "Not Verified" }}
+					{{ user.emailVerified ? "Verified" : "Not Verified" }}
 				</span>
 				<button
 					*ngIf="
 						!verificationMailSend &&
-						(user$ | async) &&
-						!(user$ | async)?.emailVerified
+						(authService.user$ | async) &&
+						!(authService.user$ | async)?.emailVerified
 					"
 					class="btn btn-sm btn-outline ms-2"
 					(click)="requestEmailVerification()"
