@@ -3,21 +3,9 @@
 # Define paths
 SOURCE_DIR="../backend_schematics/resource"
 TARGET_DIR="node_modules/@nestjs/schematics/dist/lib/resource"
-REPLACEMENT_FLAG="$TARGET_DIR/replaced.txt"
 
 # Get the terminal width
 WIDTH="${COLUMNS:-80}"
-
-# Check if the flag file exists
-if [ -f "$REPLACEMENT_FLAG" ]; then
-  printf "%-${WIDTH}s\n" "" | tr ' ' '='
-
-  # Output the message
-  echo -e "\033[32m\nResource schema already replaced.\n\033[0m"
-
-  printf "%-${WIDTH}s\n" "" | tr ' ' '='
-  exit 0  
-fi
 
 # Check if the source directory exists
 if [ ! -d "$SOURCE_DIR" ]; then
