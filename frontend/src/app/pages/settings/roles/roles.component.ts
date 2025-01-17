@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { firstValueFrom } from 'rxjs';
 import { ConfirmationDialogComponent } from 'src/app/dialog/confirmation-dialog/confirmation-dialog.component';
-import { I_Role } from 'src/app/interfaces';
+import { I_Role } from 'src/app/generated_interfaces';
 import { ToastService } from 'src/app/services/toast.service';
 import { environment } from 'src/environments/environment';
 import { AddRoleDialogComponent } from './add-role-dialog/add-role-dialog.component';

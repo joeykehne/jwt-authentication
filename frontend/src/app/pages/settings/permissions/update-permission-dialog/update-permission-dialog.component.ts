@@ -3,7 +3,7 @@ import { Component, Inject } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { firstValueFrom } from 'rxjs';
-import { I_Permission } from 'src/app/interfaces';
+import { I_Permission } from 'src/app/generated_interfaces';
 import { ToastService } from 'src/app/services/toast.service';
 import { environment } from 'src/environments/environment';
 

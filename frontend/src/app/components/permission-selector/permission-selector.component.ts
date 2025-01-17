@@ -8,7 +8,7 @@ import {
 	Output,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { I_Permission } from 'src/app/interfaces';
+import { I_Permission } from 'src/app/generated_interfaces';
 import { LoadingComponent } from '../loading/loading.component';
 
 @Component({

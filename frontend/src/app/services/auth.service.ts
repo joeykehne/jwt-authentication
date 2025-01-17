@@ -12,7 +12,7 @@ import {
 	tap,
 } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { I_User } from '../interfaces';
+import { I_User } from '../generated_interfaces';
 
 @Injectable({
 	providedIn: 'root',

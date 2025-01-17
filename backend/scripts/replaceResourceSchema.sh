@@ -25,9 +25,6 @@ rm -rf "$TARGET_DIR"
 # Copy the source folder to the target location
 cp -r "$SOURCE_DIR" "$TARGET_DIR"
 
-# Create the flag file to indicate the replacement was made
-touch "$REPLACEMENT_FLAG"
-
 printf "%-${WIDTH}s\n" "" | tr ' ' '='
 
 # Output the message

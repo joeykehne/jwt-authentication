@@ -3,7 +3,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { firstValueFrom } from 'rxjs';
-import { I_Role, I_User } from 'src/app/interfaces';
+import { I_Role, I_User } from 'src/app/generated_interfaces';
 import { ToastService } from 'src/app/services/toast.service';
 import { environment } from 'src/environments/environment';
 

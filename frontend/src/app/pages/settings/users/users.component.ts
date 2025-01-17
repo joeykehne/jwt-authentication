@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { firstValueFrom } from 'rxjs';
 import { ConfirmationDialogComponent } from 'src/app/dialog/confirmation-dialog/confirmation-dialog.component';
-import { I_User } from 'src/app/interfaces';
+import { I_User } from 'src/app/generated_interfaces';
 import { ToastService } from 'src/app/services/toast.service';
 import { environment } from 'src/environments/environment';
 import { UpdateUserDialogComponent } from './update-user-dialog/update-user-dialog.component';

@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { firstValueFrom } from 'rxjs';
 import { ChangePasswordDialogComponent } from 'src/app/dialog/change-password-dialog/change-password-dialog.component';
-import { I_User } from 'src/app/interfaces';
+import { I_User } from 'src/app/generated_interfaces';
 import { AuthService } from 'src/app/services/auth.service';
 import { ToastService } from 'src/app/services/toast.service';
 import { environment } from 'src/environments/environment';
