@@ -4,11 +4,23 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { Reflector } from '@nestjs/core';
 import { ThrottlerModule } from '@nestjs/throttler';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { NamingStrategyInterface } from 'typeorm';
+import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { ServicesModule } from './services/services.module';
 import { UserModule } from './user/user.module';
+
+class CustomNamingStrategy
+  extends SnakeNamingStrategy
+  implements NamingStrategyInterface
+{
+  tableName(className: string, customName: string | undefined): string {
+    const prefix = process.env.NODE_ENV !== 'production' ? '_DEV_' : '';
+    return `${prefix}${customName || className}`;
+  }
+}
 
 @Module({
   imports: [
@@ -34,6 +46,7 @@ import { UserModule } from './user/user.module';
         database: configService.get('MYSQL_DATABASE'),
         synchronize: process.env.NODE_ENV !== 'production',
         autoLoadEntities: true,
+        namingStrategy: new CustomNamingStrategy(),
       }),
     }),
     MailerModule.forRootAsync({
