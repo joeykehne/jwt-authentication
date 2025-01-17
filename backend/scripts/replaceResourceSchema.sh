@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Define paths
-SOURCE_DIR="schematics/resource"
+SOURCE_DIR="../backend_schematics/resource"
 TARGET_DIR="node_modules/@nestjs/schematics/dist/lib/resource"
 REPLACEMENT_FLAG="$TARGET_DIR/replaced.txt"
 
